@@ -510,23 +510,6 @@ st.markdown(
         height: 27px;
     }
 
-    /* Real Streamlit bordered containers for Plotly cards */
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        background: rgba(255,255,255,.97);
-        border: 1px solid rgba(222,226,236,.88) !important;
-        border-radius: 19px !important;
-        box-shadow: 0 8px 28px rgba(30,45,75,.055);
-    }
-
-    div[data-testid="stVerticalBlockBorderWrapper"] > div {
-        padding: 13px 16px 6px 16px;
-    }
-
-    div[data-testid="stVerticalBlockBorderWrapper"] .stPlotlyChart {
-        margin-top: -4px;
-        margin-bottom: -2px;
-    }
-
     /* Prevent utility controls from breaking into stacked letters */
     div[data-testid="stPopover"] button,
     div.stButton > button {
@@ -555,6 +538,39 @@ st.markdown(
             text-align: left;
             padding: 6px 0 0 0;
         }
+    }
+
+
+    /* V5 chart cards: explicit white surfaces using Streamlit keyed containers */
+    .st-key-daily_trend_card,
+    .st-key-platform_card,
+    .st-key-top_products_card {
+        background: #FFFFFF !important;
+        border: 1px solid #E1E5ED !important;
+        border-radius: 18px !important;
+        box-shadow: 0 7px 24px rgba(31, 45, 72, 0.055) !important;
+        padding: 17px 18px 8px 18px !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-daily_trend_card > div,
+    .st-key-platform_card > div,
+    .st-key-top_products_card > div {
+        background: transparent !important;
+    }
+
+    .st-key-daily_trend_card [data-testid="stPlotlyChart"],
+    .st-key-platform_card [data-testid="stPlotlyChart"],
+    .st-key-top_products_card [data-testid="stPlotlyChart"] {
+        background: transparent !important;
+        margin-top: -2px !important;
+        margin-bottom: -2px !important;
+    }
+
+    .st-key-daily_trend_card iframe,
+    .st-key-platform_card iframe,
+    .st-key-top_products_card iframe {
+        background: transparent !important;
     }
 
     </style>
@@ -884,7 +900,7 @@ st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
 c1, c2 = st.columns([1.65, 1.0], gap="medium")
 
 with c1:
-    with st.container(border=True):
+    with st.container(key="daily_trend_card", border=False):
         st.markdown(
             f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
             unsafe_allow_html=True,
@@ -966,7 +982,7 @@ with c1:
 # SALES BY PLATFORM
 # =========================================================
 with c2:
-    with st.container(border=True):
+    with st.container(key="platform_card", border=False):
         st.markdown(
             '<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
             unsafe_allow_html=True,
@@ -1030,7 +1046,7 @@ st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
 b1, b2 = st.columns([2.9, 1.0], gap="medium")
 
 with b1:
-    with st.container(border=True):
+    with st.container(key="top_products_card", border=False):
         st.markdown(
             '<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#929AAD;font-weight:500">(by Sales Value · Rp jt)</span></div>',
             unsafe_allow_html=True,
