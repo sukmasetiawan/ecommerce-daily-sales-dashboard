@@ -65,7 +65,8 @@ st.markdown(
         color: #26324C;
     }
 
-    #MainMenu, footer, header {visibility: hidden;}
+    #MainMenu, footer {visibility: hidden;}
+    header[data-testid="stHeader"] {visibility: hidden;}
     [data-testid="stSidebar"] {display: none;}
 
     .block-container {
@@ -115,6 +116,84 @@ st.markdown(
         color: #26324C;
         font-size: 13px;
         font-weight: 650;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 22px;
+        margin: 0 0 12px 0;
+        width: 100%;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .ksp-logo-badge {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        background: linear-gradient(135deg, #F5F0FF 0%, #FFEFF6 100%);
+        border: 1px solid #E8DFF6;
+        box-shadow: 0 6px 18px rgba(87, 58, 160, .08);
+        color: #E73579;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: .4px;
+    }
+
+    .dashboard-title {
+        margin: 0;
+        line-height: 1.04;
+        letter-spacing: -1.4px;
+        color: #111B3A;
+        font-size: clamp(28px, 2.45vw, 43px);
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .dashboard-title .accent {
+        background: linear-gradient(90deg, #6E36E8 0%, #C43DD6 52%, #F22D84 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .asof-badge {
+        flex: 0 0 auto;
+        min-width: 132px;
+        padding: 9px 13px 10px 13px;
+        border-radius: 13px;
+        background: linear-gradient(135deg, #F0ECFF 0%, #F8F4FF 100%);
+        border: 1px solid #DDD4F5;
+        box-shadow: 0 5px 16px rgba(83, 60, 155, .06);
+        text-align: left;
+    }
+
+    .asof-label {
+        color: #7A849C;
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1.1;
+        margin-bottom: 3px;
+    }
+
+    .asof-date {
+        color: #33245F;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.1;
+        white-space: nowrap;
     }
 
     .filter-caption {
@@ -355,14 +434,6 @@ st.markdown(
         padding: 17px 20px 13px 20px;
     }
 
-    .insight-card {
-        background: linear-gradient(145deg, #F7FBFF 0%, #EDF7FF 100%);
-        border: 1px solid #D9EAF8;
-        border-radius: 19px;
-        padding: 18px 20px;
-        box-shadow: 0 8px 28px rgba(30, 80, 130, .045);
-        min-height: 306px;
-    }
 
     .insight-title {
         color: #1867D8;
@@ -573,6 +644,120 @@ st.markdown(
         background: transparent !important;
     }
 
+
+    /* V6: Quick Insight stretches to match Top 5 row height */
+    div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
+        align-items: stretch !important;
+    }
+
+    div[data-testid="stColumn"]:has(.st-key-quick_insight_card) {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .st-key-quick_insight_card {
+        flex: 1 1 auto !important;
+        height: 100% !important;
+        min-height: 100% !important;
+        background: linear-gradient(145deg, #F7FBFF 0%, #EDF7FF 100%) !important;
+        border: 1px solid #D9EAF8 !important;
+        border-radius: 19px !important;
+        box-shadow: 0 8px 28px rgba(30, 80, 130, .045) !important;
+        padding: 18px 20px !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-quick_insight_card > div {
+        height: 100% !important;
+    }
+
+    .insight-content {
+        min-height: 100%;
+    }
+
+    @media (max-width: 900px) {
+        .dashboard-header {
+            align-items: flex-start;
+        }
+        .header-left {
+            gap: 10px;
+        }
+        .ksp-logo-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            font-size: 15px;
+        }
+        .asof-badge {
+            min-width: 118px;
+            padding: 8px 10px;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .dashboard-header {
+            display: block;
+        }
+        .header-left {
+            align-items: flex-start;
+        }
+        .dashboard-title {
+            white-space: normal;
+        }
+        .asof-badge {
+            display: inline-block;
+            margin-top: 10px;
+        }
+    }
+
+
+    /* V7: use empty right-side space for growth KPI */
+    .sales-top-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(180px, .8fr);
+        gap: 22px;
+        align-items: end;
+    }
+
+    .sales-main {
+        min-width: 0;
+    }
+
+    .growth-panel {
+        min-width: 0;
+        padding-bottom: 7px;
+        text-align: left;
+    }
+
+    .growth-label {
+        color: #7D879E;
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        white-space: nowrap;
+    }
+
+    .growth-large {
+        margin-left: 0 !important;
+        font-size: clamp(22px, 1.75vw, 29px) !important;
+        line-height: 1.05;
+        font-weight: 800 !important;
+        letter-spacing: -.4px;
+    }
+
+    @media (max-width: 980px) {
+        .sales-top-row {
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
+        .growth-panel {
+            padding-bottom: 0;
+        }
+        .growth-label {
+            white-space: normal;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -682,11 +867,15 @@ data_min_date = sales["Tanggal"].min().date()
 st.markdown(
     f"""
     <div class="dashboard-header">
-      <h1 class="dashboard-title">
-        DAILY SALES MONITORING <span class="accent">E-COMMERCE</span>
-      </h1>
-      <div class="asof">
-        Data per <strong>{data_max_date.strftime("%d %b %Y")}</strong>
+      <div class="header-left">
+        <div class="ksp-logo-badge">KSP</div>
+        <h1 class="dashboard-title">
+          DAILY SALES MONITORING <span class="accent">E-COMMERCE</span>
+        </h1>
+      </div>
+      <div class="asof-badge">
+        <div class="asof-label">Data per</div>
+        <div class="asof-date">{data_max_date.strftime("%d %b %Y")}</div>
       </div>
     </div>
     """,
@@ -818,11 +1007,15 @@ with k1:
           <div class="kpi-grid">
             <div class="kpi-icon sales">◉</div>
             <div>
-              <div class="kpi-title">SALES - MONTH TO DATE</div>
-              <div class="kpi-value">{rp_jt(sales_mtd)}</div>
-              <div class="sales-meta">
-                <span class="subtle">vs Same Period Last Month</span>
-                <span class="{growth_class}">{growth_text}</span>
+              <div class="sales-top-row">
+                <div class="sales-main">
+                  <div class="kpi-title">SALES - MONTH TO DATE</div>
+                  <div class="kpi-value">{rp_jt(sales_mtd)}</div>
+                </div>
+                <div class="growth-panel">
+                  <div class="growth-label">vs Same Period Last Month</div>
+                  <div class="{growth_class} growth-large">{growth_text}</div>
+                </div>
               </div>
               <div class="divider"></div>
               <div class="daily-avg-row">
@@ -1101,24 +1294,25 @@ with b2:
         req_value = "—"
         req_note = "Select All Platform + All Product"
 
-    st.markdown(
-        f"""
-        <div class="insight-card">
-          <div class="insight-title">💡 QUICK INSIGHT</div>
-          <div class="insight-block">
-            <div class="insight-label">Sales pace (Daily Avg)</div>
-            <div class="insight-value">{rp_jt(daily_avg)}/day</div>
-            <div class="insight-note">{pace_msg}</div>
-          </div>
-          <div class="insight-block">
-            <div class="insight-label">Required daily sales to reach monthly target</div>
-            <div class="insight-value">{req_value}/day</div>
-            <div class="insight-note">{req_note}</div>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    with st.container(key="quick_insight_card", border=False):
+        st.markdown(
+            f"""
+            <div class="insight-content">
+              <div class="insight-title">💡 QUICK INSIGHT</div>
+              <div class="insight-block">
+                <div class="insight-label">Sales pace (Daily Avg)</div>
+                <div class="insight-value">{rp_jt(daily_avg)}/day</div>
+                <div class="insight-note">{pace_msg}</div>
+              </div>
+              <div class="insight-block">
+                <div class="insight-label">Required daily sales to reach monthly target</div>
+                <div class="insight-value">{req_value}/day</div>
+                <div class="insight-note">{req_note}</div>
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 st.markdown(
     '<div class="footer-note">Note: All sales values are in Rupiah (Rp). Sales Target Achievement uses the total monthly e-commerce target and is therefore shown only on the unfiltered total view.</div>',
