@@ -769,6 +769,98 @@ st.markdown(
         }
     }
 
+
+    /* V9 mobile filter layout: max 2 rows */
+    @media (max-width: 760px) {
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+            align-items: flex-end !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(1) {
+            flex: 1 1 34% !important;
+            min-width: 0 !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(2) {
+            flex: 1 1 28% !important;
+            min-width: 0 !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(3) {
+            flex: 1 1 34% !important;
+            min-width: 0 !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(4) {
+            flex: 0 0 72px !important;
+            min-width: 72px !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(5) {
+            flex: 0 0 132px !important;
+            min-width: 132px !important;
+        }
+
+        div[data-testid="stDateInput"] label,
+        div[data-testid="stSelectbox"] label {
+            font-size: 10px !important;
+            margin-bottom: 2px !important;
+        }
+
+        div[data-testid="stDateInput"] > div > div,
+        div[data-testid="stSelectbox"] > div > div {
+            min-height: 40px !important;
+            height: 40px !important;
+            border-radius: 11px !important;
+        }
+
+        .filter-button-spacer {
+            height: 21px !important;
+        }
+
+        div.stButton > button,
+        div[data-testid="stPopover"] button {
+            height: 40px !important;
+            min-height: 40px !important;
+            border-radius: 11px !important;
+            font-size: 12px !important;
+        }
+    }
+
+    @media (max-width: 430px) {
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(1) {
+            flex: 1 1 100% !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(2),
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(3) {
+            flex: 1 1 calc(50% - 4px) !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(4) {
+            flex: 0 0 58px !important;
+            min-width: 58px !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(5) {
+            flex: 0 0 118px !important;
+            min-width: 118px !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -851,7 +943,7 @@ def plot_layout(height=330):
             y=1.12,
             xanchor="left",
             yanchor="bottom",
-            font=dict(size=11, color="#64708A"),
+            font=dict(size=10, color="#64708A"),
         ),
     )
 
@@ -1174,7 +1266,7 @@ with c1:
                 y=prev_full["Sales Value"],
                 mode="lines",
                 name=f"Last Month ({prev_month_start.strftime('%b %Y')})",
-                line=dict(color=PURPLE_LIGHT, width=2.3, dash="dash"),
+                line=dict(color=PURPLE_LIGHT, width=2.2, dash="dash"),
                 hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
             )
         )
