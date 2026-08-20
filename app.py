@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import calendar
 from datetime import date, datetime
@@ -162,29 +163,30 @@ st.markdown(
     }
 
     .kpi-card {
-        min-height: 212px;
-        height: 212px;
-        padding: 22px 24px;
+        min-height: 224px;
+        height: 224px;
+        padding: 20px 22px;
         position: relative;
         overflow: hidden;
+        box-sizing: border-box;
     }
 
     .kpi-grid {
         display: grid;
-        grid-template-columns: 126px 1fr;
-        gap: 22px;
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 20px;
         align-items: start;
     }
 
     .kpi-icon {
-        width: 112px;
-        height: 112px;
-        border-radius: 22px;
+        width: 96px;
+        height: 96px;
+        border-radius: 21px;
         display: flex;
         justify-content: center;
         align-items: center;
         color: white;
-        font-size: 48px;
+        font-size: 40px;
         box-shadow: 0 12px 24px rgba(101, 56, 230, .17);
     }
 
@@ -198,7 +200,7 @@ st.markdown(
 
     .kpi-title {
         color: #17213D;
-        font-size: 17px;
+        font-size: 15px;
         font-weight: 760;
         letter-spacing: -.15px;
         margin: 1px 0 8px 0;
@@ -206,11 +208,11 @@ st.markdown(
 
     .kpi-value {
         color: #121C3A;
-        font-size: clamp(34px, 3.05vw, 53px);
+        font-size: clamp(34px, 2.75vw, 47px);
         line-height: 1.02;
         font-weight: 800;
         letter-spacing: -1.5px;
-        margin: 2px 0 10px 0;
+        margin: 2px 0 8px 0;
     }
 
     .kpi-value.purple {
@@ -219,12 +221,12 @@ st.markdown(
 
     .subtle {
         color: #7D879E;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .growth {
         color: #16B968;
-        font-size: 19px;
+        font-size: 16px;
         font-weight: 750;
         margin-left: 8px;
         white-space: nowrap;
@@ -244,7 +246,7 @@ st.markdown(
     .divider {
         height: 1px;
         background: #E5E8EF;
-        margin: 16px 0 14px 0;
+        margin: 11px 0 10px 0;
     }
 
     .daily-avg-row {
@@ -256,13 +258,13 @@ st.markdown(
 
     .daily-avg-label {
         color: #18213C;
-        font-size: 15px;
+        font-size: 13px;
         font-weight: 700;
     }
 
     .daily-avg-value {
         color: #17213D;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 800;
         text-align: right;
     }
@@ -274,12 +276,12 @@ st.markdown(
     }
 
     .progress-track {
-        height: 9px;
+        height: 7px;
         width: 100%;
         background: #E7E6F0;
         border-radius: 999px;
         overflow: hidden;
-        margin: 13px 0 15px 0;
+        margin: 10px 0 12px 0;
     }
 
     .progress-fill {
@@ -292,7 +294,7 @@ st.markdown(
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0;
-        margin-top: 10px;
+        margin-top: 6px;
         align-items: start;
     }
 
@@ -313,13 +315,13 @@ st.markdown(
 
     .target-stat-label {
         color: #7E879C;
-        font-size: 11px;
+        font-size: 10px;
         margin-bottom: 4px;
     }
 
     .target-stat-value {
         color: #1C2744;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 720;
         white-space: nowrap;
         overflow: hidden;
@@ -417,6 +419,11 @@ st.markdown(
         margin-top: 0;
     }
 
+
+    .section-gap {
+        height: 14px;
+    }
+
     @media (max-width: 900px) {
         .block-container {
             padding-left: 1rem;
@@ -505,8 +512,8 @@ st.markdown(
 
     /* Real Streamlit bordered containers for Plotly cards */
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        background: rgba(255,255,255,.94);
-        border: 1px solid rgba(222,226,236,.96) !important;
+        background: rgba(255,255,255,.97);
+        border: 1px solid rgba(222,226,236,.88) !important;
         border-radius: 19px !important;
         box-shadow: 0 8px 28px rgba(30,45,75,.055);
     }
@@ -869,6 +876,8 @@ with k2:
         unsafe_allow_html=True,
     )
 
+st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
+
 # =========================================================
 # DAILY SALES TREND
 # =========================================================
@@ -932,7 +941,7 @@ with c1:
             )
         )
 
-        fig.update_layout(**plot_layout(332))
+        fig.update_layout(**plot_layout(292))
         fig.update_xaxes(
             title=None,
             tickmode="linear",
@@ -995,7 +1004,7 @@ with c2:
                 hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
             )
         )
-        fig2.update_layout(**plot_layout(326))
+        fig2.update_layout(**plot_layout(292))
         fig2.update_layout(showlegend=False, bargap=.48, margin=dict(l=8, r=78, t=18, b=20))
         fig2.update_xaxes(
             showgrid=True,
@@ -1012,6 +1021,8 @@ with c2:
             tickfont=dict(size=11),
         )
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
+
+st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
 
 # =========================================================
 # TOP 5 PRODUCTS + QUICK INSIGHT
@@ -1050,7 +1061,7 @@ with b1:
                 hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
             )
         )
-        fig3.update_layout(**plot_layout(268))
+        fig3.update_layout(**plot_layout(230))
         fig3.update_layout(
             showlegend=False,
             bargap=.48,
