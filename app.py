@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import calendar
 from datetime import date, datetime
@@ -70,7 +69,7 @@ st.markdown(
 
     .block-container {
         max-width: 1540px;
-        padding-top: 0.55rem;
+        padding-top: 0.35rem;
         padding-bottom: 1.8rem;
         padding-left: 2.2rem;
         padding-right: 2.2rem;
@@ -345,11 +344,9 @@ st.markdown(
 
     .chart-card {
         padding: 18px 20px 6px 20px;
-        min-height: 408px;
     }
 
     .chart-card.compact {
-        min-height: 408px;
     }
 
     .top-card {
@@ -475,6 +472,84 @@ st.markdown(
             border-right: none;
         }
     }
+
+    /* V3: stable Streamlit layout */
+    .dashboard-header {
+        width: 100%;
+        align-items: flex-end;
+        margin: 0 0 12px 0;
+    }
+
+    .dashboard-title {
+        font-size: clamp(30px, 3.0vw, 43px);
+        white-space: nowrap;
+        flex: 1 1 auto;
+    }
+
+    .asof {
+        flex: 0 0 auto;
+        text-align: right;
+        padding: 0 2px 3px 16px;
+        font-size: 11px;
+    }
+
+    .asof strong {
+        display: inline;
+        margin-left: 5px;
+        font-size: 12px;
+    }
+
+    .filter-button-spacer {
+        height: 27px;
+    }
+
+    /* Real Streamlit bordered containers for Plotly cards */
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        background: rgba(255,255,255,.94);
+        border: 1px solid rgba(222,226,236,.96) !important;
+        border-radius: 19px !important;
+        box-shadow: 0 8px 28px rgba(30,45,75,.055);
+    }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] > div {
+        padding: 13px 16px 6px 16px;
+    }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] .stPlotlyChart {
+        margin-top: -4px;
+        margin-bottom: -2px;
+    }
+
+    /* Prevent utility controls from breaking into stacked letters */
+    div[data-testid="stPopover"] button,
+    div.stButton > button {
+        white-space: nowrap !important;
+        min-width: 0 !important;
+        padding-left: .55rem !important;
+        padding-right: .55rem !important;
+    }
+
+    @media (max-width: 1100px) {
+        .dashboard-title {
+            font-size: 34px;
+            letter-spacing: -1px;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .dashboard-header {
+            display: block;
+        }
+        .dashboard-title {
+            white-space: normal;
+            font-size: 28px;
+        }
+        .asof {
+            text-align: left;
+            padding: 6px 0 0 0;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -581,56 +656,24 @@ data_min_date = sales["Tanggal"].min().date()
 # =========================================================
 # HEADER
 # =========================================================
-h1, h2 = st.columns([5.2, 1.3], gap="small")
-with h1:
-    st.markdown(
-        f"""
-        <div class="dashboard-header">
-          <h1 class="dashboard-title">
-            DAILY SALES MONITORING <span class="accent">E-COMMERCE</span>
-          </h1>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-with h2:
-    u1, u2 = st.columns([1.35, 0.95], gap="small")
-    with u1:
-        st.markdown(
-            f"""
-            <div class="asof">
-              Data per
-              <strong>{data_max_date.strftime("%d %b %Y")}</strong>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    with u2:
-        with st.popover("↥ Update", use_container_width=True):
-            uploaded = st.file_uploader(
-                "Upload Excel terbaru",
-                type=["xlsx"],
-                label_visibility="collapsed",
-                help="File harus mempertahankan sheet DB Penjualan Produk 2026 dan Monthly Sales Target.",
-            )
-            st.markdown(
-                '<div class="upload-note">Upload hanya berlaku untuk sesi aktif.</div>',
-                unsafe_allow_html=True,
-            )
-
-if uploaded is not None:
-    try:
-        sales, targets = load_workbook(uploaded)
-        data_max_date = sales["Tanggal"].max().date()
-        data_min_date = sales["Tanggal"].min().date()
-    except Exception as e:
-        st.error(f"Gagal membaca database upload: {e}")
-        st.stop()
+st.markdown(
+    f"""
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">
+        DAILY SALES MONITORING <span class="accent">E-COMMERCE</span>
+      </h1>
+      <div class="asof">
+        Data per <strong>{data_max_date.strftime("%d %b %Y")}</strong>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # =========================================================
 # FILTERS
 # =========================================================
-f1, f2, f3, f4 = st.columns([1.0, 1.0, 1.45, .35], gap="medium")
+f1, f2, f3, f4, f5 = st.columns([1.0, 1.0, 1.45, .28, .42], gap="small")
 
 with f1:
     selected_date = st.date_input(
@@ -640,14 +683,12 @@ with f1:
         max_value=data_max_date,
     )
 
-# Disable impossible future date relative to data (date_input already capped)
 selected_date = min(selected_date, data_max_date)
 
 with f2:
     platform_options = ["All Platform"] + PLATFORM_ORDER
     selected_platform = st.selectbox("Platform", platform_options, index=0)
 
-# product list scoped only to dates up to selected date, but not platform yet
 products_available = (
     sales.loc[sales["Tanggal"].dt.date <= selected_date, "Product"]
     .dropna()
@@ -663,10 +704,33 @@ with f3:
     )
 
 with f4:
-    st.markdown('<div style="height:27px"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="filter-button-spacer"></div>', unsafe_allow_html=True)
     reset = st.button("↻", help="Reset filters", use_container_width=True)
     if reset:
         st.rerun()
+
+with f5:
+    st.markdown('<div class="filter-button-spacer"></div>', unsafe_allow_html=True)
+    with st.popover("↥ Update", use_container_width=True):
+        uploaded = st.file_uploader(
+            "Upload Excel terbaru",
+            type=["xlsx"],
+            label_visibility="collapsed",
+            help="File harus mempertahankan sheet DB Penjualan Produk 2026 dan Monthly Sales Target.",
+        )
+        st.markdown(
+            '<div class="upload-note">Upload hanya berlaku untuk sesi aktif.</div>',
+            unsafe_allow_html=True,
+        )
+
+if uploaded is not None:
+    try:
+        sales, targets = load_workbook(uploaded)
+        data_max_date = sales["Tanggal"].max().date()
+        data_min_date = sales["Tanggal"].min().date()
+    except Exception as e:
+        st.error(f"Gagal membaca database upload: {e}")
+        st.stop()
 
 selected_ts = pd.Timestamp(selected_date)
 year, month, day = selected_ts.year, selected_ts.month, selected_ts.day
@@ -811,145 +875,143 @@ with k2:
 c1, c2 = st.columns([1.65, 1.0], gap="medium")
 
 with c1:
-    st.markdown('<div class="card chart-card">', unsafe_allow_html=True)
-    st.markdown(
-        f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
-        unsafe_allow_html=True,
-    )
-
-    curr_daily = (
-        filtered[
-            (filtered["Tanggal"] >= month_start) &
-            (filtered["Tanggal"] <= selected_ts)
-        ]
-        .assign(Day=lambda x: x["Tanggal"].dt.day)
-        .groupby("Day", as_index=False)["Sales Value"].sum()
-    )
-    prev_full = (
-        filtered[
-            (filtered["Tanggal"] >= prev_month_start) &
-            (filtered["Tanggal"] <= prev_month_end)
-        ]
-        .assign(Day=lambda x: x["Tanggal"].dt.day)
-        .groupby("Day", as_index=False)["Sales Value"].sum()
-    )
-
-    current_days = pd.DataFrame({"Day": range(1, calendar.monthrange(year, month)[1] + 1)})
-    prev_days = pd.DataFrame({"Day": range(1, calendar.monthrange(prev_month_start.year, prev_month_start.month)[1] + 1)})
-    curr_daily = current_days.merge(curr_daily, on="Day", how="left")
-    prev_full = prev_days.merge(prev_full, on="Day", how="left")
-
-    # no line after selected date for current month
-    curr_daily.loc[curr_daily["Day"] > day, "Sales Value"] = np.nan
-    curr_daily["Sales Value"] = curr_daily["Sales Value"] / 1_000_000
-    prev_full["Sales Value"] = prev_full["Sales Value"].fillna(0) / 1_000_000
-
-    fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(
-            x=curr_daily["Day"],
-            y=curr_daily["Sales Value"],
-            mode="lines+markers",
-            name=f"This Month ({selected_ts.strftime('%b %Y')})",
-            line=dict(color=PURPLE, width=3),
-            marker=dict(size=5, color="#FFFFFF", line=dict(color=PURPLE, width=1.8)),
-            connectgaps=False,
-            hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+    with st.container(border=True):
+        st.markdown(
+            f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
+            unsafe_allow_html=True,
         )
-    )
-    fig.add_trace(
-        go.Scatter(
-            x=prev_full["Day"],
-            y=prev_full["Sales Value"],
-            mode="lines",
-            name=f"Last Month ({prev_month_start.strftime('%b %Y')})",
-            line=dict(color=PURPLE_LIGHT, width=2.3, dash="dash"),
-            hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
-        )
-    )
 
-    fig.update_layout(**plot_layout(332))
-    fig.update_xaxes(
-        title=None,
-        tickmode="linear",
-        dtick=1,
-        showgrid=False,
-        zeroline=False,
-        color="#6F7890",
-        tickfont=dict(size=9),
-    )
-    fig.update_yaxes(
-        title=None,
-        showgrid=True,
-        gridcolor=GRID,
-        griddash="dot",
-        zeroline=False,
-        color="#6F7890",
-        ticksuffix="",
-    )
-    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
-    st.markdown('</div>', unsafe_allow_html=True)
+        curr_daily = (
+            filtered[
+                (filtered["Tanggal"] >= month_start) &
+                (filtered["Tanggal"] <= selected_ts)
+            ]
+            .assign(Day=lambda x: x["Tanggal"].dt.day)
+            .groupby("Day", as_index=False)["Sales Value"].sum()
+        )
+        prev_full = (
+            filtered[
+                (filtered["Tanggal"] >= prev_month_start) &
+                (filtered["Tanggal"] <= prev_month_end)
+            ]
+            .assign(Day=lambda x: x["Tanggal"].dt.day)
+            .groupby("Day", as_index=False)["Sales Value"].sum()
+        )
+
+        current_days = pd.DataFrame({"Day": range(1, calendar.monthrange(year, month)[1] + 1)})
+        prev_days = pd.DataFrame({"Day": range(1, calendar.monthrange(prev_month_start.year, prev_month_start.month)[1] + 1)})
+        curr_daily = current_days.merge(curr_daily, on="Day", how="left")
+        prev_full = prev_days.merge(prev_full, on="Day", how="left")
+
+        # no line after selected date for current month
+        curr_daily.loc[curr_daily["Day"] > day, "Sales Value"] = np.nan
+        curr_daily["Sales Value"] = curr_daily["Sales Value"] / 1_000_000
+        prev_full["Sales Value"] = prev_full["Sales Value"].fillna(0) / 1_000_000
+
+        fig = go.Figure()
+        fig.add_trace(
+            go.Scatter(
+                x=curr_daily["Day"],
+                y=curr_daily["Sales Value"],
+                mode="lines+markers",
+                name=f"This Month ({selected_ts.strftime('%b %Y')})",
+                line=dict(color=PURPLE, width=3),
+                marker=dict(size=5, color="#FFFFFF", line=dict(color=PURPLE, width=1.8)),
+                connectgaps=False,
+                hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                x=prev_full["Day"],
+                y=prev_full["Sales Value"],
+                mode="lines",
+                name=f"Last Month ({prev_month_start.strftime('%b %Y')})",
+                line=dict(color=PURPLE_LIGHT, width=2.3, dash="dash"),
+                hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+            )
+        )
+
+        fig.update_layout(**plot_layout(332))
+        fig.update_xaxes(
+            title=None,
+            tickmode="linear",
+            dtick=1,
+            showgrid=False,
+            zeroline=False,
+            color="#6F7890",
+            tickfont=dict(size=9),
+        )
+        fig.update_yaxes(
+            title=None,
+            showgrid=True,
+            gridcolor=GRID,
+            griddash="dot",
+            zeroline=False,
+            color="#6F7890",
+            ticksuffix="",
+        )
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
 # =========================================================
 # SALES BY PLATFORM
 # =========================================================
 with c2:
-    st.markdown('<div class="card chart-card compact">', unsafe_allow_html=True)
-    st.markdown(
-        '<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
-        unsafe_allow_html=True,
-    )
-
-    by_platform = (
-        mtd.groupby("Platform Group", as_index=False)["Sales Value"]
-        .sum()
-        .set_index("Platform Group")
-        .reindex(PLATFORM_ORDER, fill_value=0)
-        .reset_index()
-    )
-    total_platform = by_platform["Sales Value"].sum()
-    by_platform["Share"] = np.where(
-        total_platform != 0,
-        by_platform["Sales Value"] / total_platform * 100,
-        0,
-    )
-    by_platform["ValueJt"] = by_platform["Sales Value"] / 1_000_000
-
-    platform_text = [
-        f"{rp_jt(v)}<br><span style='font-size:10px'>{s:.1f}%</span>"
-        for v, s in zip(by_platform["Sales Value"], by_platform["Share"])
-    ]
-
-    fig2 = go.Figure(
-        go.Bar(
-            y=by_platform["Platform Group"],
-            x=by_platform["ValueJt"],
-            orientation="h",
-            marker_color=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]],
-            text=platform_text,
-            textposition="outside",
-            cliponaxis=False,
-            hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
+    with st.container(border=True):
+        st.markdown(
+            '<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
+            unsafe_allow_html=True,
         )
-    )
-    fig2.update_layout(**plot_layout(326))
-    fig2.update_layout(showlegend=False, bargap=.48, margin=dict(l=8, r=78, t=18, b=20))
-    fig2.update_xaxes(
-        showgrid=True,
-        gridcolor=GRID,
-        griddash="dot",
-        zeroline=False,
-        color="#6F7890",
-        title=None,
-    )
-    fig2.update_yaxes(
-        showgrid=False,
-        autorange="reversed",
-        color="#42506B",
-        tickfont=dict(size=11),
-    )
-    st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
-    st.markdown('</div>', unsafe_allow_html=True)
+
+        by_platform = (
+            mtd.groupby("Platform Group", as_index=False)["Sales Value"]
+            .sum()
+            .set_index("Platform Group")
+            .reindex(PLATFORM_ORDER, fill_value=0)
+            .reset_index()
+        )
+        total_platform = by_platform["Sales Value"].sum()
+        by_platform["Share"] = np.where(
+            total_platform != 0,
+            by_platform["Sales Value"] / total_platform * 100,
+            0,
+        )
+        by_platform["ValueJt"] = by_platform["Sales Value"] / 1_000_000
+
+        platform_text = [
+            f"{rp_jt(v)}<br><span style='font-size:10px'>{s:.1f}%</span>"
+            for v, s in zip(by_platform["Sales Value"], by_platform["Share"])
+        ]
+
+        fig2 = go.Figure(
+            go.Bar(
+                y=by_platform["Platform Group"],
+                x=by_platform["ValueJt"],
+                orientation="h",
+                marker_color=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]],
+                text=platform_text,
+                textposition="outside",
+                cliponaxis=False,
+                hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
+            )
+        )
+        fig2.update_layout(**plot_layout(326))
+        fig2.update_layout(showlegend=False, bargap=.48, margin=dict(l=8, r=78, t=18, b=20))
+        fig2.update_xaxes(
+            showgrid=True,
+            gridcolor=GRID,
+            griddash="dot",
+            zeroline=False,
+            color="#6F7890",
+            title=None,
+        )
+        fig2.update_yaxes(
+            showgrid=False,
+            autorange="reversed",
+            color="#42506B",
+            tickfont=dict(size=11),
+        )
+        st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
 
 # =========================================================
 # TOP 5 PRODUCTS + QUICK INSIGHT
@@ -957,47 +1019,46 @@ with c2:
 b1, b2 = st.columns([2.9, 1.0], gap="medium")
 
 with b1:
-    st.markdown('<div class="card top-card">', unsafe_allow_html=True)
-    st.markdown(
-        '<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#929AAD;font-weight:500">(by Sales Value · Rp jt)</span></div>',
-        unsafe_allow_html=True,
-    )
-
-    top5 = (
-        mtd.groupby("Product", as_index=False)["Sales Value"]
-        .sum()
-        .sort_values("Sales Value", ascending=False)
-        .head(5)
-        .sort_values("Sales Value", ascending=True)
-    )
-    total_mtd_for_share = float(mtd["Sales Value"].sum())
-    top5["Share"] = np.where(total_mtd_for_share != 0, top5["Sales Value"] / total_mtd_for_share * 100, 0)
-    top5["ValueJt"] = top5["Sales Value"] / 1_000_000
-
-    top_colors = ["#F4B51F", "#4BC675", "#4E85EB", "#8A5AE2", "#EF347D"][:len(top5)]
-
-    fig3 = go.Figure(
-        go.Bar(
-            y=top5["Product"],
-            x=top5["ValueJt"],
-            orientation="h",
-            marker_color=top_colors,
-            text=[f"{rp_jt(v)}  ·  {s:.1f}%" for v, s in zip(top5["Sales Value"], top5["Share"])],
-            textposition="outside",
-            cliponaxis=False,
-            hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
+    with st.container(border=True):
+        st.markdown(
+            '<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#929AAD;font-weight:500">(by Sales Value · Rp jt)</span></div>',
+            unsafe_allow_html=True,
         )
-    )
-    fig3.update_layout(**plot_layout(268))
-    fig3.update_layout(
-        showlegend=False,
-        bargap=.48,
-        margin=dict(l=8, r=120, t=16, b=12),
-    )
-    fig3.update_xaxes(showgrid=True, gridcolor=GRID, griddash="dot", zeroline=False, color="#6F7890")
-    fig3.update_yaxes(showgrid=False, color="#34415C", tickfont=dict(size=10))
-    st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar": False})
-    st.markdown('</div>', unsafe_allow_html=True)
+
+        top5 = (
+            mtd.groupby("Product", as_index=False)["Sales Value"]
+            .sum()
+            .sort_values("Sales Value", ascending=False)
+            .head(5)
+            .sort_values("Sales Value", ascending=True)
+        )
+        total_mtd_for_share = float(mtd["Sales Value"].sum())
+        top5["Share"] = np.where(total_mtd_for_share != 0, top5["Sales Value"] / total_mtd_for_share * 100, 0)
+        top5["ValueJt"] = top5["Sales Value"] / 1_000_000
+
+        top_colors = ["#F4B51F", "#4BC675", "#4E85EB", "#8A5AE2", "#EF347D"][:len(top5)]
+
+        fig3 = go.Figure(
+            go.Bar(
+                y=top5["Product"],
+                x=top5["ValueJt"],
+                orientation="h",
+                marker_color=top_colors,
+                text=[f"{rp_jt(v)}  ·  {s:.1f}%" for v, s in zip(top5["Sales Value"], top5["Share"])],
+                textposition="outside",
+                cliponaxis=False,
+                hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
+            )
+        )
+        fig3.update_layout(**plot_layout(268))
+        fig3.update_layout(
+            showlegend=False,
+            bargap=.48,
+            margin=dict(l=8, r=120, t=16, b=12),
+        )
+        fig3.update_xaxes(showgrid=True, gridcolor=GRID, griddash="dot", zeroline=False, color="#6F7890")
+        fig3.update_yaxes(showgrid=False, color="#34415C", tickfont=dict(size=10))
+        st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar": False})
 
 with b2:
     if is_total_view and not pd.isna(required_daily):
