@@ -70,7 +70,7 @@ st.markdown(
 
     .block-container {
         max-width: 1540px;
-        padding-top: 1.35rem;
+        padding-top: 0.55rem;
         padding-bottom: 1.8rem;
         padding-left: 2.2rem;
         padding-right: 2.2rem;
@@ -79,9 +79,9 @@ st.markdown(
     .dashboard-header {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
+        align-items: center;
         gap: 24px;
-        margin: 4px 0 14px 0;
+        margin: 0 0 8px 0;
     }
 
     .dashboard-title {
@@ -129,7 +129,7 @@ st.markdown(
         background: rgba(255,255,255,.88);
         border: 1px solid #E2E6EF;
         border-radius: 13px;
-        min-height: 48px;
+        min-height: 44px;
         box-shadow: 0 3px 15px rgba(34, 47, 72, .035);
     }
 
@@ -145,7 +145,7 @@ st.markdown(
         border: 1px solid #E1E5EE;
         background: rgba(255,255,255,.92);
         color: #4F5A73;
-        height: 48px;
+        height: 44px;
         font-weight: 600;
         box-shadow: 0 3px 15px rgba(34, 47, 72, .035);
     }
@@ -163,8 +163,9 @@ st.markdown(
     }
 
     .kpi-card {
-        min-height: 220px;
-        padding: 24px 26px;
+        min-height: 212px;
+        height: 212px;
+        padding: 22px 24px;
         position: relative;
         overflow: hidden;
     }
@@ -290,14 +291,20 @@ st.markdown(
 
     .target-stats {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 8px;
-        margin-top: 8px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0;
+        margin-top: 10px;
+        align-items: start;
     }
 
     .target-stat {
-        padding-right: 9px;
+        padding: 0 14px;
         border-right: 1px solid #E4E7EE;
+        min-width: 0;
+    }
+
+    .target-stat:first-child {
+        padding-left: 0;
     }
 
     .target-stat:last-child {
@@ -313,9 +320,11 @@ st.markdown(
 
     .target-stat-value {
         color: #1C2744;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 720;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .target-stat-value.red { color: #F04444; }
@@ -452,15 +461,18 @@ st.markdown(
             font-size: 19px;
         }
         .target-stats {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
         }
         .target-stat {
-            border-right: none;
-            border-bottom: 1px solid #E4E7EE;
-            padding: 7px 0;
+            border-right: 1px solid #E4E7EE;
+            border-bottom: none;
+            padding: 0 8px;
+        }
+        .target-stat:first-child {
+            padding-left: 0;
         }
         .target-stat:last-child {
-            border-bottom: none;
+            border-right: none;
         }
     }
     </style>
@@ -546,22 +558,8 @@ def plot_layout(height=330):
 # =========================================================
 default_path = Path(__file__).parent / DB_FILE
 
-# Small top utility row for database update
-util_left, util_right = st.columns([5.7, 1.0], gap="small")
-with util_right:
-    with st.popover("↥ Update Database", use_container_width=True):
-        uploaded = st.file_uploader(
-            "Upload Excel terbaru",
-            type=["xlsx"],
-            label_visibility="collapsed",
-            help="File harus mempertahankan sheet DB Penjualan Produk 2026 dan Monthly Sales Target.",
-        )
-        st.markdown(
-            '<div class="upload-note">Upload hanya berlaku untuk sesi aktif. File default tetap dipakai saat app dibuka ulang.</div>',
-            unsafe_allow_html=True,
-        )
-
-data_source = uploaded if uploaded is not None else default_path
+uploaded = None
+data_source = default_path
 
 if uploaded is None and not default_path.exists():
     st.error(f"Database default **{DB_FILE}** tidak ditemukan.")
@@ -583,20 +581,51 @@ data_min_date = sales["Tanggal"].min().date()
 # =========================================================
 # HEADER
 # =========================================================
-st.markdown(
-    f"""
-    <div class="dashboard-header">
-      <h1 class="dashboard-title">
-        DAILY SALES MONITORING <span class="accent">E-COMMERCE</span>
-      </h1>
-      <div class="asof">
-        Data per
-        <strong>{data_max_date.strftime("%d %b %Y")}</strong>
-      </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+h1, h2 = st.columns([5.2, 1.3], gap="small")
+with h1:
+    st.markdown(
+        f"""
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">
+            DAILY SALES MONITORING <span class="accent">E-COMMERCE</span>
+          </h1>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+with h2:
+    u1, u2 = st.columns([1.35, 0.95], gap="small")
+    with u1:
+        st.markdown(
+            f"""
+            <div class="asof">
+              Data per
+              <strong>{data_max_date.strftime("%d %b %Y")}</strong>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with u2:
+        with st.popover("↥ Update", use_container_width=True):
+            uploaded = st.file_uploader(
+                "Upload Excel terbaru",
+                type=["xlsx"],
+                label_visibility="collapsed",
+                help="File harus mempertahankan sheet DB Penjualan Produk 2026 dan Monthly Sales Target.",
+            )
+            st.markdown(
+                '<div class="upload-note">Upload hanya berlaku untuk sesi aktif.</div>',
+                unsafe_allow_html=True,
+            )
+
+if uploaded is not None:
+    try:
+        sales, targets = load_workbook(uploaded)
+        data_max_date = sales["Tanggal"].max().date()
+        data_min_date = sales["Tanggal"].min().date()
+    except Exception as e:
+        st.error(f"Gagal membaca database upload: {e}")
+        st.stop()
 
 # =========================================================
 # FILTERS
@@ -776,8 +805,6 @@ with k2:
         unsafe_allow_html=True,
     )
 
-st.write("")
-
 # =========================================================
 # DAILY SALES TREND
 # =========================================================
@@ -923,8 +950,6 @@ with c2:
     )
     st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
     st.markdown('</div>', unsafe_allow_html=True)
-
-st.write("")
 
 # =========================================================
 # TOP 5 PRODUCTS + QUICK INSIGHT
