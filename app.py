@@ -1487,6 +1487,211 @@ st.markdown(
         }
     }
 
+
+    /* V13 MOBILE ONLY — stronger Streamlit secondary-button override */
+    @media (max-width: 760px) {
+        button[data-testid="baseButton-secondary"],
+        div[data-testid="stButton"] button[data-testid="baseButton-secondary"],
+        div[data-testid="stPopover"] button[data-testid="baseButton-secondary"] {
+            background: #FFFFFF !important;
+            background-color: #FFFFFF !important;
+            background-image: none !important;
+            color: #25304A !important;
+            border: 1px solid #D9DEE9 !important;
+            box-shadow: 0 2px 7px rgba(25,40,70,.04) !important;
+        }
+
+        button[data-testid="baseButton-secondary"] *,
+        div[data-testid="stButton"] button[data-testid="baseButton-secondary"] *,
+        div[data-testid="stPopover"] button[data-testid="baseButton-secondary"] * {
+            color: #25304A !important;
+            fill: #25304A !important;
+            stroke: #25304A !important;
+        }
+
+        button[data-testid="baseButton-secondary"]:hover,
+        div[data-testid="stButton"] button[data-testid="baseButton-secondary"]:hover,
+        div[data-testid="stPopover"] button[data-testid="baseButton-secondary"]:hover {
+            background: #F8F6FF !important;
+            background-color: #F8F6FF !important;
+            border-color: #CFC5F5 !important;
+            color: #6538E6 !important;
+        }
+
+        button[data-testid="baseButton-secondary"]:hover *,
+        div[data-testid="stButton"] button[data-testid="baseButton-secondary"]:hover *,
+        div[data-testid="stPopover"] button[data-testid="baseButton-secondary"]:hover * {
+            color: #6538E6 !important;
+            fill: #6538E6 !important;
+            stroke: #6538E6 !important;
+        }
+    }
+
+
+    /* =====================================================
+       V14 MOBILE ONLY — desktop remains unchanged
+       ===================================================== */
+    @media (max-width: 760px) {
+
+        /* 1. Header -> "Data per" tighter */
+        .dashboard-header {
+            gap: 0 !important;
+            margin-bottom: 3px !important;
+        }
+
+        .asof-badge {
+            margin-top: -4px !important;
+            padding: 4px 8px !important;
+            border-radius: 9px !important;
+        }
+
+        /* 2. Date + Platform controls shorter */
+        div[data-testid="stDateInput"] label,
+        div[data-testid="stSelectbox"] label {
+            font-size: 8px !important;
+            line-height: 1 !important;
+            margin-bottom: 0 !important;
+            min-height: 8px !important;
+        }
+
+        div[data-testid="stDateInput"] > div > div,
+        div[data-testid="stSelectbox"] > div > div {
+            height: 29px !important;
+            min-height: 29px !important;
+            border-radius: 8px !important;
+        }
+
+        div[data-testid="stDateInput"] input,
+        div[data-testid="stSelectbox"] div[role="button"] {
+            font-size: 9px !important;
+            line-height: 1 !important;
+        }
+
+        /* 3. Product + Refresh + Update row shorter */
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+            gap: 1px 5px !important;
+            margin-top: -3px !important;
+            margin-bottom: 0 !important;
+        }
+
+        .filter-button-spacer {
+            height: 10px !important;
+        }
+
+        div.stButton > button,
+        div[data-testid="stPopover"] button,
+        button[data-testid="baseButton-secondary"] {
+            height: 29px !important;
+            min-height: 29px !important;
+            border-radius: 8px !important;
+            font-size: 9px !important;
+            line-height: 1 !important;
+            padding: 0 7px !important;
+        }
+
+        /* 4. Refresh + Update must stay light/white */
+        button[data-testid="baseButton-secondary"],
+        div[data-testid="stButton"] button[data-testid="baseButton-secondary"],
+        div[data-testid="stPopover"] button[data-testid="baseButton-secondary"],
+        div.stButton > button,
+        div[data-testid="stPopover"] button {
+            background: #FFFFFF !important;
+            background-color: #FFFFFF !important;
+            background-image: none !important;
+            color: #25304A !important;
+            border: 1px solid #D9DEE9 !important;
+            box-shadow: 0 2px 7px rgba(25,40,70,.04) !important;
+        }
+
+        button[data-testid="baseButton-secondary"] *,
+        div[data-testid="stButton"] button[data-testid="baseButton-secondary"] *,
+        div[data-testid="stPopover"] button[data-testid="baseButton-secondary"] *,
+        div.stButton > button *,
+        div[data-testid="stPopover"] button * {
+            color: #25304A !important;
+            fill: #25304A !important;
+            stroke: #25304A !important;
+        }
+
+        /* 5. ALL mobile panel/section titles = 15px */
+        .panel-title,
+        .insight-title,
+        .kpi-title {
+            font-size: 15px !important;
+            line-height: 1.15 !important;
+            font-weight: 760 !important;
+        }
+
+        /* 6. Sales Target Achievement typography */
+        .kpi-card .kpi-value.purple {
+            font-size: calc(clamp(29px, 8.1vw, 36px) - 1px) !important;
+        }
+
+        /* Achievement vs Monthly Target: +1px from previous mobile 10px */
+        .kpi-card .subtle {
+            font-size: 11px !important;
+        }
+
+        /* Actual MTD + Monthly Target labels: +1px */
+        .target-stat-label {
+            font-size: 10px !important;
+        }
+
+        /* Keep values readable */
+        .target-stat-value {
+            font-size: 10px !important;
+        }
+
+        /* 7. Sales MTD main value -1px */
+        .kpi-card .sales-main .kpi-value {
+            font-size: calc(clamp(29px, 8.1vw, 36px) - 1px) !important;
+        }
+
+        /* 8. Daily Sales Trend legend bold */
+        .st-key-daily_trend_card_mobile .legendtext {
+            font-weight: 700 !important;
+        }
+
+        /* 9 & 10. Top 5 spacing + auto height + bottom breathing room */
+        .st-key-top_products_card_mobile {
+            height: auto !important;
+            min-height: 0 !important;
+            padding-top: 14px !important;
+            padding-bottom: 20px !important;
+            overflow: visible !important;
+        }
+
+        .st-key-top_products_card_mobile > div {
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
+
+        .st-key-top_products_card_mobile .panel-title {
+            margin-bottom: 10px !important;
+        }
+
+        .mobile-top5-list {
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            padding-top: 0 !important;
+            padding-bottom: 4px !important;
+        }
+
+        .mobile-top5-item:first-child {
+            padding-top: 4px !important;
+        }
+
+        .mobile-top5-item:last-child {
+            padding-bottom: 10px !important;
+        }
+
+        .mobile-product-bar {
+            margin-bottom: 0 !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
