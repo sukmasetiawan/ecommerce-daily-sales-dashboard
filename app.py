@@ -1,6 +1,7 @@
 
 from pathlib import Path
 import base64
+import html
 import calendar
 from datetime import date, datetime
 
@@ -861,6 +862,445 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V10 MOBILE ONLY — desktop remains unchanged
+       ===================================================== */
+    .mobile-only-card,
+    .st-key-daily_trend_card_mobile,
+    .st-key-platform_card_mobile,
+    .st-key-top_products_card_mobile {
+        display: none;
+    }
+
+    @media (max-width: 760px) {
+        .block-container {
+            padding: 0.55rem 0.72rem 1.15rem 0.72rem !important;
+        }
+
+        /* ---------- Header ---------- */
+        .dashboard-header {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) auto !important;
+            grid-template-areas:
+                "left left"
+                "date date" !important;
+            gap: 7px !important;
+            margin-bottom: 10px !important;
+            align-items: start !important;
+        }
+
+        .header-left {
+            grid-area: left;
+            display: grid !important;
+            grid-template-columns: 74px minmax(0, 1fr) !important;
+            gap: 9px !important;
+            align-items: center !important;
+            width: 100% !important;
+        }
+
+        .ksp-logo-img,
+        .ksp-logo-fallback {
+            width: 72px !important;
+            height: 44px !important;
+        }
+
+        .dashboard-title {
+            display: block !important;
+            font-size: clamp(21px, 6.2vw, 27px) !important;
+            line-height: 1.04 !important;
+            letter-spacing: -0.65px !important;
+            white-space: normal !important;
+            margin: 0 !important;
+        }
+
+        .dashboard-title .title-main,
+        .dashboard-title .title-accent {
+            display: block !important;
+            white-space: nowrap !important;
+        }
+
+        .dashboard-title .title-accent {
+            margin-top: 3px !important;
+        }
+
+        .asof-badge {
+            grid-area: date;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+            width: fit-content !important;
+            min-width: 0 !important;
+            margin: 0 !important;
+            padding: 6px 9px !important;
+            border-radius: 10px !important;
+        }
+
+        .asof-label {
+            margin: 0 !important;
+            font-size: 9px !important;
+        }
+
+        .asof-date {
+            font-size: 11px !important;
+        }
+
+        /* ---------- Filters: EXACTLY 2 rows ----------
+           Row 1: Date | Platform
+           Row 2: Product | Reset | Update
+        */
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 54px 104px !important;
+            grid-template-areas:
+                "date platform platform platform"
+                "product product reset update" !important;
+            gap: 7px !important;
+            align-items: end !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"] {
+            width: auto !important;
+            min-width: 0 !important;
+            flex: none !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(1) { grid-area: date !important; }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(2) { grid-area: platform !important; }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(3) { grid-area: product !important; }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(4) { grid-area: reset !important; }
+
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        > div[data-testid="stColumn"]:nth-child(5) { grid-area: update !important; }
+
+        div[data-testid="stDateInput"] label,
+        div[data-testid="stSelectbox"] label {
+            font-size: 9px !important;
+            margin-bottom: 1px !important;
+        }
+
+        div[data-testid="stDateInput"] > div > div,
+        div[data-testid="stSelectbox"] > div > div {
+            height: 38px !important;
+            min-height: 38px !important;
+            border-radius: 10px !important;
+        }
+
+        .filter-button-spacer {
+            height: 20px !important;
+        }
+
+        div.stButton > button,
+        div[data-testid="stPopover"] button {
+            height: 38px !important;
+            min-height: 38px !important;
+            border-radius: 10px !important;
+            font-size: 11px !important;
+        }
+
+        /* ---------- KPI cards ---------- */
+        .kpi-card {
+            height: auto !important;
+            min-height: 0 !important;
+            padding: 14px !important;
+            border-radius: 16px !important;
+        }
+
+        .kpi-grid {
+            grid-template-columns: 62px minmax(0, 1fr) !important;
+            gap: 11px !important;
+        }
+
+        .kpi-icon {
+            width: 58px !important;
+            height: 58px !important;
+            border-radius: 15px !important;
+            font-size: 25px !important;
+        }
+
+        .kpi-title {
+            font-size: 12px !important;
+            margin-bottom: 4px !important;
+        }
+
+        .kpi-value {
+            font-size: clamp(29px, 8.1vw, 36px) !important;
+            line-height: 1 !important;
+            margin: 1px 0 5px 0 !important;
+            letter-spacing: -0.7px !important;
+        }
+
+        .sales-top-row {
+            grid-template-columns: minmax(0, 1.25fr) minmax(105px, .75fr) !important;
+            gap: 8px !important;
+            align-items: end !important;
+        }
+
+        .growth-panel {
+            padding-bottom: 2px !important;
+        }
+
+        .growth-label {
+            font-size: 9px !important;
+            line-height: 1.2 !important;
+            white-space: normal !important;
+            margin-bottom: 3px !important;
+        }
+
+        .growth-large {
+            font-size: 20px !important;
+            white-space: nowrap !important;
+        }
+
+        .divider {
+            margin: 8px 0 !important;
+        }
+
+        .daily-avg-label {
+            font-size: 11px !important;
+        }
+
+        .subtle {
+            font-size: 9px !important;
+        }
+
+        .daily-avg-value {
+            font-size: 17px !important;
+            white-space: nowrap !important;
+        }
+
+        .daily-avg-value span {
+            font-size: 10px !important;
+        }
+
+        /* Target KPI: Actual + Target row, Gap full-width second row */
+        .progress-track {
+            margin: 7px 0 8px 0 !important;
+            height: 6px !important;
+        }
+
+        .target-stats {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0 !important;
+            margin-top: 4px !important;
+        }
+
+        .target-stat {
+            padding: 0 7px !important;
+            border-right: 1px solid #E4E7EE !important;
+            border-bottom: none !important;
+        }
+
+        .target-stat:first-child {
+            padding-left: 0 !important;
+        }
+
+        .target-stat:nth-child(2) {
+            border-right: none !important;
+        }
+
+        .target-stat:last-child {
+            grid-column: 1 / -1 !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            border-right: none !important;
+            border-top: 1px solid #E7EAF0 !important;
+            margin-top: 7px !important;
+            padding: 7px 0 0 0 !important;
+        }
+
+        .target-stat-label {
+            font-size: 8px !important;
+            margin-bottom: 2px !important;
+        }
+
+        .target-stat:last-child .target-stat-label {
+            margin-bottom: 0 !important;
+        }
+
+        .target-stat-value {
+            font-size: 10px !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+        }
+
+        /* ---------- Section spacing ---------- */
+        .section-gap {
+            height: 9px !important;
+        }
+
+        /* Streamlit columns become stacked cards */
+        div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card),
+        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card) {
+            gap: 10px !important;
+        }
+
+        /* ---------- Desktop chart cards hidden on mobile ---------- */
+        .st-key-daily_trend_card,
+        .st-key-platform_card,
+        .st-key-top_products_card {
+            display: none !important;
+        }
+
+        /* ---------- Mobile-specific chart cards ---------- */
+        .st-key-daily_trend_card_mobile,
+        .st-key-platform_card_mobile,
+        .st-key-top_products_card_mobile {
+            display: block !important;
+            background: #FFFFFF !important;
+            border: 1px solid #E1E5ED !important;
+            border-radius: 16px !important;
+            box-shadow: 0 6px 20px rgba(31,45,72,.045) !important;
+            padding: 13px 12px 7px 12px !important;
+            overflow: hidden !important;
+        }
+
+        .panel-title {
+            font-size: 13px !important;
+        }
+
+        .st-key-daily_trend_card_mobile [data-testid="stPlotlyChart"],
+        .st-key-platform_card_mobile [data-testid="stPlotlyChart"] {
+            margin-top: -4px !important;
+            margin-bottom: -6px !important;
+        }
+
+        /* ---------- Top 5 mobile list ---------- */
+        .mobile-top5-list {
+            display: block !important;
+            margin-top: 9px !important;
+        }
+
+        .mobile-top5-item {
+            padding: 7px 0 !important;
+            border-top: 1px solid #EEF0F5 !important;
+        }
+
+        .mobile-top5-item:first-child {
+            border-top: none !important;
+            padding-top: 2px !important;
+        }
+
+        .mobile-top5-head {
+            display: grid !important;
+            grid-template-columns: 20px minmax(0, 1fr) auto !important;
+            gap: 6px !important;
+            align-items: center !important;
+        }
+
+        .mobile-rank {
+            width: 18px !important;
+            height: 18px !important;
+            border-radius: 999px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 9px !important;
+            font-weight: 800 !important;
+            color: white !important;
+        }
+
+        .mobile-product-name {
+            font-size: 10px !important;
+            line-height: 1.2 !important;
+            color: #26324C !important;
+            font-weight: 650 !important;
+            overflow-wrap: anywhere !important;
+        }
+
+        .mobile-product-value {
+            font-size: 9px !important;
+            color: #59657D !important;
+            font-weight: 700 !important;
+            white-space: nowrap !important;
+        }
+
+        .mobile-product-bar {
+            height: 5px !important;
+            margin: 5px 0 0 26px !important;
+            border-radius: 999px !important;
+            background: #EEF0F5 !important;
+            overflow: hidden !important;
+        }
+
+        .mobile-product-bar > span {
+            display: block !important;
+            height: 100% !important;
+            border-radius: 999px !important;
+        }
+
+        /* ---------- Quick Insight ---------- */
+        div[data-testid="stColumn"]:has(.st-key-quick_insight_card) {
+            display: block !important;
+        }
+
+        .st-key-quick_insight_card {
+            min-height: 0 !important;
+            height: auto !important;
+            padding: 14px !important;
+            border-radius: 16px !important;
+        }
+
+        .insight-title {
+            font-size: 13px !important;
+            margin-bottom: 11px !important;
+        }
+
+        .insight-block {
+            padding-bottom: 10px !important;
+        }
+
+        .insight-block + .insight-block {
+            padding-top: 10px !important;
+        }
+
+        .insight-label {
+            font-size: 10px !important;
+        }
+
+        .insight-value {
+            font-size: 16px !important;
+        }
+
+        .insight-note {
+            font-size: 9px !important;
+        }
+
+        .footer-note {
+            font-size: 8px !important;
+            line-height: 1.35 !important;
+            margin-top: 7px !important;
+        }
+    }
+
+    @media (max-width: 390px) {
+        .dashboard-title {
+            font-size: 20px !important;
+        }
+        .header-left {
+            grid-template-columns: 66px minmax(0, 1fr) !important;
+        }
+        .ksp-logo-img,
+        .ksp-logo-fallback {
+            width: 64px !important;
+        }
+        .sales-top-row {
+            grid-template-columns: minmax(0, 1fr) 96px !important;
+        }
+        .growth-large {
+            font-size: 18px !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -1053,7 +1493,8 @@ header_slot.markdown(
       <div class="header-left">
         {logo_html}
         <h1 class="dashboard-title">
-          DAILY SALES MONITORING <span class="accent">E-COMMERCE</span>
+          <span class="title-main">DAILY SALES MONITORING</span>
+          <span class="accent title-accent">E-COMMERCE</span>
         </h1>
       </div>
       <div class="asof-badge">
@@ -1292,6 +1733,75 @@ with c1:
         )
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
+    # Mobile-only Daily Sales Trend (desktop card above is hidden by CSS on mobile)
+    with st.container(key="daily_trend_card_mobile", border=False):
+        st.markdown(
+            '<div class="panel-title">DAILY SALES TREND <span style="font-size:9px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
+            unsafe_allow_html=True,
+        )
+        fig_mobile = go.Figure()
+        fig_mobile.add_trace(
+            go.Scatter(
+                x=curr_daily["Day"],
+                y=curr_daily["Sales Value"],
+                mode="lines+markers",
+                name="This Month",
+                line=dict(color=PURPLE, width=2.6),
+                marker=dict(size=4, color="#FFFFFF", line=dict(color=PURPLE, width=1.5)),
+                connectgaps=False,
+                hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+            )
+        )
+        fig_mobile.add_trace(
+            go.Scatter(
+                x=prev_full["Day"],
+                y=prev_full["Sales Value"],
+                mode="lines",
+                name="Last Month",
+                line=dict(color=PURPLE_LIGHT, width=2.0, dash="dash"),
+                hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+            )
+        )
+        mobile_tickvals = [d for d in [1, 5, 10, 15, 20, 25, 31] if d <= max(current_days["Day"].max(), prev_days["Day"].max())]
+        fig_mobile.update_layout(
+            height=225,
+            margin=dict(l=2, r=4, t=38, b=18),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Inter, sans-serif", color=TEXT, size=9),
+            hoverlabel=dict(bgcolor="#FFFFFF", font_color=NAVY, bordercolor="#E0E3EB"),
+            legend=dict(
+                orientation="h",
+                x=0,
+                y=1.15,
+                xanchor="left",
+                yanchor="bottom",
+                font=dict(size=9, color="#64708A"),
+            ),
+        )
+        fig_mobile.update_xaxes(
+            title=None,
+            tickmode="array",
+            tickvals=mobile_tickvals,
+            ticktext=[str(v) for v in mobile_tickvals],
+            range=[0.5, max(current_days["Day"].max(), prev_days["Day"].max()) + 0.5],
+            showgrid=False,
+            zeroline=False,
+            color="#7B8599",
+            tickfont=dict(size=8),
+        )
+        fig_mobile.update_yaxes(
+            title=None,
+            showgrid=True,
+            gridcolor=GRID,
+            griddash="dot",
+            zeroline=False,
+            color="#7B8599",
+            tickfont=dict(size=8),
+            nticks=5,
+        )
+        st.plotly_chart(fig_mobile, use_container_width=True, config={"displayModeBar": False})
+
 # =========================================================
 # SALES BY PLATFORM
 # =========================================================
@@ -1352,6 +1862,50 @@ with c2:
         )
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
 
+    # Mobile-only Sales by Platform
+    with st.container(key="platform_card_mobile", border=False):
+        st.markdown(
+            '<div class="panel-title">SALES BY PLATFORM <span style="font-size:9px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
+            unsafe_allow_html=True,
+        )
+        fig2_mobile = go.Figure(
+            go.Bar(
+                y=by_platform["Platform Group"],
+                x=by_platform["ValueJt"],
+                orientation="h",
+                marker_color=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]],
+                text=[f"{rp_jt(v)} · {s:.1f}%" for v, s in zip(by_platform["Sales Value"], by_platform["Share"])],
+                textposition="outside",
+                cliponaxis=False,
+                hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
+            )
+        )
+        fig2_mobile.update_layout(
+            height=205,
+            margin=dict(l=82, r=68, t=10, b=20),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Inter, sans-serif", color=TEXT, size=9),
+            showlegend=False,
+            bargap=.48,
+        )
+        fig2_mobile.update_xaxes(
+            showgrid=True,
+            gridcolor=GRID,
+            griddash="dot",
+            zeroline=False,
+            color="#7B8599",
+            tickfont=dict(size=8),
+            nticks=4,
+        )
+        fig2_mobile.update_yaxes(
+            showgrid=False,
+            autorange="reversed",
+            color="#42506B",
+            tickfont=dict(size=9),
+        )
+        st.plotly_chart(fig2_mobile, use_container_width=True, config={"displayModeBar": False})
+
 st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
 
 # =========================================================
@@ -1400,6 +1954,40 @@ with b1:
         fig3.update_xaxes(showgrid=True, gridcolor=GRID, griddash="dot", zeroline=False, color="#6F7890")
         fig3.update_yaxes(showgrid=False, color="#34415C", tickfont=dict(size=10))
         st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar": False})
+
+    # Mobile-only Top 5 list: readable product names, compact bars
+    with st.container(key="top_products_card_mobile", border=False):
+        st.markdown(
+            '<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:9px;color:#929AAD;font-weight:500">(by Sales Value)</span></div>',
+            unsafe_allow_html=True,
+        )
+        top5_mobile = top5.sort_values("Sales Value", ascending=False).reset_index(drop=True)
+        max_top5_value = float(top5_mobile["Sales Value"].max()) if not top5_mobile.empty else 1.0
+        mobile_colors = ["#EF347D", "#8A5AE2", "#4E85EB", "#4BC675", "#F4B51F"]
+        mobile_items = []
+        for idx, row in top5_mobile.iterrows():
+            width_pct = (float(row["Sales Value"]) / max_top5_value * 100) if max_top5_value else 0
+            product_name = html.escape(str(row["Product"]))
+            value_text = html.escape(f"{rp_jt(row['Sales Value'])} · {row['Share']:.1f}%")
+            color = mobile_colors[idx % len(mobile_colors)]
+            mobile_items.append(
+                f"""
+                <div class="mobile-top5-item">
+                  <div class="mobile-top5-head">
+                    <span class="mobile-rank" style="background:{color}">{idx+1}</span>
+                    <span class="mobile-product-name">{product_name}</span>
+                    <span class="mobile-product-value">{value_text}</span>
+                  </div>
+                  <div class="mobile-product-bar">
+                    <span style="width:{width_pct:.1f}%;background:{color}"></span>
+                  </div>
+                </div>
+                """
+            )
+        st.markdown(
+            '<div class="mobile-top5-list">' + ''.join(mobile_items) + '</div>',
+            unsafe_allow_html=True,
+        )
 
 with b2:
     if is_total_view and not pd.isna(required_daily):
