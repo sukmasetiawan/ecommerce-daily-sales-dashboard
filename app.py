@@ -1301,6 +1301,76 @@ st.markdown(
         }
     }
 
+
+    @media (max-width: 760px) {
+        /* FILTERS: shorter + tighter */
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+            gap: 4px 6px !important;
+            margin-top: -2px !important;
+            margin-bottom: 2px !important;
+        }
+        div[data-testid="stDateInput"] label,
+        div[data-testid="stSelectbox"] label {
+            font-size: 8px !important;
+            line-height: 1 !important;
+            margin-bottom: 0 !important;
+            min-height: 10px !important;
+        }
+        div[data-testid="stDateInput"] > div > div,
+        div[data-testid="stSelectbox"] > div > div {
+            height: 34px !important;
+            min-height: 34px !important;
+            border-radius: 9px !important;
+        }
+        div[data-testid="stDateInput"] input,
+        div[data-testid="stSelectbox"] div[role="button"] {
+            font-size: 10px !important;
+        }
+        .filter-button-spacer { height: 15px !important; }
+
+        /* REFRESH + UPDATE: readable, not black */
+        div.stButton > button,
+        div[data-testid="stPopover"] button {
+            height: 34px !important;
+            min-height: 34px !important;
+            border-radius: 9px !important;
+            font-size: 10px !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            background: #FFFFFF !important;
+            color: #25304A !important;
+            border: 1px solid #D9DEE9 !important;
+            box-shadow: 0 2px 8px rgba(25,40,70,.035) !important;
+        }
+        div.stButton > button *,
+        div[data-testid="stPopover"] button * {
+            color: #25304A !important;
+        }
+
+        /* CHART TITLES */
+        .st-key-daily_trend_card_mobile .panel-title,
+        .st-key-platform_card_mobile .panel-title,
+        .st-key-top_products_card_mobile .panel-title {
+            margin-bottom: 9px !important;
+            color: #17213C !important;
+        }
+
+        /* PLOTLY TEXT: darker for readability */
+        .st-key-daily_trend_card_mobile .js-plotly-plot text,
+        .st-key-platform_card_mobile .js-plotly-plot text {
+            fill: #4A556D !important;
+        }
+
+        /* TOP 5 */
+        .st-key-top_products_card_mobile {
+            color: #26324C !important;
+        }
+        .mobile-top5-list {
+            width: 100% !important;
+            overflow: visible !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -1765,18 +1835,19 @@ with c1:
         mobile_tickvals = [d for d in [1, 5, 10, 15, 20, 25, 31] if d <= max(current_days["Day"].max(), prev_days["Day"].max())]
         fig_mobile.update_layout(
             height=225,
-            margin=dict(l=2, r=4, t=38, b=18),
+            margin=dict(l=8, r=6, t=52, b=24),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", color=TEXT, size=9),
+            font=dict(family="Inter, sans-serif", color="#4A556D", size=9),
             hoverlabel=dict(bgcolor="#FFFFFF", font_color=NAVY, bordercolor="#E0E3EB"),
             legend=dict(
                 orientation="h",
                 x=0,
-                y=1.15,
+                y=1.06,
                 xanchor="left",
                 yanchor="bottom",
-                font=dict(size=9, color="#64708A"),
+                font=dict(size=9, color="#4A556D"),
+                bgcolor="rgba(0,0,0,0)",
             ),
         )
         fig_mobile.update_xaxes(
@@ -1787,8 +1858,8 @@ with c1:
             range=[0.5, max(current_days["Day"].max(), prev_days["Day"].max()) + 0.5],
             showgrid=False,
             zeroline=False,
-            color="#7B8599",
-            tickfont=dict(size=8),
+            color="#4A556D",
+            tickfont=dict(size=8, color="#4A556D"),
         )
         fig_mobile.update_yaxes(
             title=None,
@@ -1796,8 +1867,8 @@ with c1:
             gridcolor=GRID,
             griddash="dot",
             zeroline=False,
-            color="#7B8599",
-            tickfont=dict(size=8),
+            color="#4A556D",
+            tickfont=dict(size=8, color="#4A556D"),
             nticks=5,
         )
         st.plotly_chart(fig_mobile, use_container_width=True, config={"displayModeBar": False})
@@ -1882,10 +1953,10 @@ with c2:
         )
         fig2_mobile.update_layout(
             height=205,
-            margin=dict(l=82, r=68, t=10, b=20),
+            margin=dict(l=82, r=68, t=8, b=24),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", color=TEXT, size=9),
+            font=dict(family="Inter, sans-serif", color="#4A556D", size=9),
             showlegend=False,
             bargap=.48,
         )
@@ -1894,15 +1965,15 @@ with c2:
             gridcolor=GRID,
             griddash="dot",
             zeroline=False,
-            color="#7B8599",
-            tickfont=dict(size=8),
+            color="#4A556D",
+            tickfont=dict(size=8, color="#4A556D"),
             nticks=4,
         )
         fig2_mobile.update_yaxes(
             showgrid=False,
             autorange="reversed",
-            color="#42506B",
-            tickfont=dict(size=9),
+            color="#3F4A61",
+            tickfont=dict(size=9, color="#3F4A61"),
         )
         st.plotly_chart(fig2_mobile, use_container_width=True, config={"displayModeBar": False})
 
@@ -1970,24 +2041,20 @@ with b1:
             product_name = html.escape(str(row["Product"]))
             value_text = html.escape(f"{rp_jt(row['Sales Value'])} · {row['Share']:.1f}%")
             color = mobile_colors[idx % len(mobile_colors)]
-            mobile_items.append(
-                f"""
-                <div class="mobile-top5-item">
-                  <div class="mobile-top5-head">
-                    <span class="mobile-rank" style="background:{color}">{idx+1}</span>
-                    <span class="mobile-product-name">{product_name}</span>
-                    <span class="mobile-product-value">{value_text}</span>
-                  </div>
-                  <div class="mobile-product-bar">
-                    <span style="width:{width_pct:.1f}%;background:{color}"></span>
-                  </div>
-                </div>
-                """
+            item_html = (
+                f'<div class="mobile-top5-item">'
+                f'<div class="mobile-top5-head">'
+                f'<span class="mobile-rank" style="background:{color}">{idx+1}</span>'
+                f'<span class="mobile-product-name">{product_name}</span>'
+                f'<span class="mobile-product-value">{value_text}</span>'
+                f'</div>'
+                f'<div class="mobile-product-bar">'
+                f'<span style="width:{width_pct:.1f}%;background:{color}"></span>'
+                f'</div>'
+                f'</div>'
             )
-        st.markdown(
-            '<div class="mobile-top5-list">' + ''.join(mobile_items) + '</div>',
-            unsafe_allow_html=True,
-        )
+            mobile_items.append(item_html)
+        st.markdown('<div class="mobile-top5-list">' + ''.join(mobile_items) + '</div>', unsafe_allow_html=True)
 
 with b2:
     if is_total_view and not pd.isna(required_daily):
