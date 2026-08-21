@@ -1979,7 +1979,7 @@ default_path = Path(__file__).parent / DB_FILE
 
 data_source = default_path
 
-if uploaded is None and not default_path.exists():
+if not default_path.exists():
     st.error(f"Database default **{DB_FILE}** tidak ditemukan.")
     st.stop()
 
