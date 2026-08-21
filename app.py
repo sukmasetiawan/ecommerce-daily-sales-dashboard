@@ -1692,6 +1692,86 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V15 MOBILE ONLY — desktop remains unchanged
+       ===================================================== */
+
+    /* Mobile title duplicate is hidden on desktop */
+    .sales-mobile-title {
+        display: none;
+    }
+
+    @media (max-width: 760px) {
+
+        /* Refresh button: target the keyed Streamlit wrapper directly.
+           This is intentionally more specific than Streamlit's theme CSS. */
+        .st-key-refresh_btn,
+        .st-key-refresh_btn > div,
+        .st-key-refresh_btn [data-testid="stButton"] {
+            background: transparent !important;
+        }
+
+        .st-key-refresh_btn button,
+        .st-key-refresh_btn button[data-testid="baseButton-secondary"],
+        .st-key-refresh_btn [data-testid="stButton"] button {
+            background: #FFFFFF !important;
+            background-color: #FFFFFF !important;
+            background-image: none !important;
+            color: #25304A !important;
+            border: 1px solid #D9DEE9 !important;
+            box-shadow: 0 2px 7px rgba(25,40,70,.04) !important;
+            -webkit-appearance: none !important;
+            appearance: none !important;
+        }
+
+        .st-key-refresh_btn button *,
+        .st-key-refresh_btn button svg,
+        .st-key-refresh_btn button span,
+        .st-key-refresh_btn button p {
+            color: #25304A !important;
+            fill: #25304A !important;
+            stroke: #25304A !important;
+        }
+
+        .st-key-refresh_btn button:hover {
+            background: #F8F6FF !important;
+            background-color: #F8F6FF !important;
+            border-color: #CFC5F5 !important;
+        }
+
+        /* SALES - MONTH TO DATE title: retain 15px but force one full-width line */
+        .sales-mobile-title {
+            display: block !important;
+            font-size: 15px !important;
+            line-height: 1.15 !important;
+            white-space: nowrap !important;
+            margin: 0 0 7px 0 !important;
+            width: 100% !important;
+        }
+
+        .sales-desktop-title {
+            display: none !important;
+        }
+
+        /* Once the title is outside this row, value + growth can use all remaining width */
+        .sales-top-row {
+            grid-template-columns: minmax(0, 1fr) auto !important;
+            gap: 12px !important;
+            align-items: end !important;
+        }
+
+        .sales-main {
+            min-width: 0 !important;
+        }
+
+        .growth-panel {
+            min-width: 112px !important;
+            max-width: 132px !important;
+            padding-bottom: 1px !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -1843,7 +1923,7 @@ with f3:
 
 with f4:
     st.markdown('<div class="filter-button-spacer"></div>', unsafe_allow_html=True)
-    reset = st.button("↻", help="Reset filters", use_container_width=True)
+    reset = st.button("↻", help="Reset filters", use_container_width=True, key="refresh_btn")
     if reset:
         st.rerun()
 
@@ -1960,9 +2040,10 @@ with k1:
           <div class="kpi-grid">
             <div class="kpi-icon sales">◉</div>
             <div>
+              <div class="kpi-title sales-mobile-title">SALES - MONTH TO DATE</div>
               <div class="sales-top-row">
                 <div class="sales-main">
-                  <div class="kpi-title">SALES - MONTH TO DATE</div>
+                  <div class="kpi-title sales-desktop-title">SALES - MONTH TO DATE</div>
                   <div class="kpi-value">{rp_jt(sales_mtd)}</div>
                 </div>
                 <div class="growth-panel">
