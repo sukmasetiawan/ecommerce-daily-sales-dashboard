@@ -2304,7 +2304,7 @@ with c1:
 with c2:
     with st.container(key="platform_card", border=False):
         st.markdown(
-            '<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
+            '<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">(Share of MTD Sales)</span></div>',
             unsafe_allow_html=True,
         )
 
@@ -2329,76 +2329,92 @@ with c2:
         ]
 
         fig2 = go.Figure(
-            go.Bar(
-                y=by_platform["Platform Group"],
-                x=by_platform["ValueJt"],
-                orientation="h",
-                marker_color=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]],
-                text=platform_text,
-                textposition="outside",
-                cliponaxis=False,
-                hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
+            go.Pie(
+                labels=by_platform["Platform Group"],
+                values=by_platform["Sales Value"],
+                hole=0.58,
+                sort=False,
+                direction="clockwise",
+                marker=dict(colors=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]]),
+                textinfo="percent",
+                textposition="inside",
+                textfont=dict(size=12, color="#FFFFFF", family="Inter, sans-serif"),
+                hovertemplate="<b>%{label}</b><br>Rp %{value:,.0f}<br>%{percent}<extra></extra>",
             )
         )
-        fig2.update_layout(**plot_layout(292))
-        fig2.update_layout(showlegend=False, bargap=.48, margin=dict(l=8, r=78, t=18, b=20))
-        fig2.update_xaxes(
-            showgrid=True,
-            gridcolor=GRID,
-            griddash="dot",
-            zeroline=False,
-            color="#6F7890",
-            title=None,
-        )
-        fig2.update_yaxes(
-            showgrid=False,
-            autorange="reversed",
-            color="#42506B",
-            tickfont=dict(size=11),
+        fig2.update_layout(
+            height=292,
+            margin=dict(l=10, r=10, t=8, b=8),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Inter, sans-serif", color=TEXT, size=10),
+            showlegend=True,
+            legend=dict(
+                orientation="v",
+                x=1.02,
+                y=0.5,
+                xanchor="left",
+                yanchor="middle",
+                font=dict(size=10, color="#4A556D"),
+            ),
+            annotations=[
+                dict(
+                    text=f"<b>{rp_jt(total_platform)}</b><br><span style='font-size:10px'>MTD Sales</span>",
+                    x=0.5,
+                    y=0.5,
+                    showarrow=False,
+                    align="center",
+                    font=dict(size=14, color=NAVY, family="Inter, sans-serif"),
+                )
+            ],
         )
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
 
     # Mobile-only Sales by Platform
     with st.container(key="platform_card_mobile", border=False):
         st.markdown(
-            '<div class="panel-title">SALES BY PLATFORM <span style="font-size:9px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
+            '<div class="panel-title">SALES BY PLATFORM <span style="font-size:9px;color:#929AAD;font-weight:500">(Share of MTD Sales)</span></div>',
             unsafe_allow_html=True,
         )
         fig2_mobile = go.Figure(
-            go.Bar(
-                y=by_platform["Platform Group"],
-                x=by_platform["ValueJt"],
-                orientation="h",
-                marker_color=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]],
-                text=[f"{rp_jt(v)} · {s:.1f}%" for v, s in zip(by_platform["Sales Value"], by_platform["Share"])],
-                textposition="outside",
-                cliponaxis=False,
-                hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
+            go.Pie(
+                labels=by_platform["Platform Group"],
+                values=by_platform["Sales Value"],
+                hole=0.60,
+                sort=False,
+                direction="clockwise",
+                marker=dict(colors=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]]),
+                textinfo="percent",
+                textposition="inside",
+                textfont=dict(size=10, color="#FFFFFF", family="Inter, sans-serif"),
+                hovertemplate="<b>%{label}</b><br>Rp %{value:,.0f}<br>%{percent}<extra></extra>",
             )
         )
         fig2_mobile.update_layout(
-            height=205,
-            margin=dict(l=82, r=68, t=8, b=24),
+            height=235,
+            margin=dict(l=4, r=4, t=6, b=44),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(family="Inter, sans-serif", color="#4A556D", size=9),
-            showlegend=False,
-            bargap=.48,
-        )
-        fig2_mobile.update_xaxes(
-            showgrid=True,
-            gridcolor=GRID,
-            griddash="dot",
-            zeroline=False,
-            color="#4A556D",
-            tickfont=dict(size=8, color="#4A556D"),
-            nticks=4,
-        )
-        fig2_mobile.update_yaxes(
-            showgrid=False,
-            autorange="reversed",
-            color="#3F4A61",
-            tickfont=dict(size=9, color="#3F4A61"),
+            showlegend=True,
+            legend=dict(
+                orientation="h",
+                x=0.5,
+                y=-0.08,
+                xanchor="center",
+                yanchor="top",
+                font=dict(size=9, color="#4A556D"),
+            ),
+            annotations=[
+                dict(
+                    text=f"<b>{rp_jt(total_platform)}</b><br><span style='font-size:9px'>MTD Sales</span>",
+                    x=0.5,
+                    y=0.53,
+                    showarrow=False,
+                    align="center",
+                    font=dict(size=12, color=NAVY, family="Inter, sans-serif"),
+                )
+            ],
         )
         st.plotly_chart(fig2_mobile, use_container_width=True, config={"displayModeBar": False})
 
