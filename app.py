@@ -1371,6 +1371,122 @@ st.markdown(
         }
     }
 
+
+    /* V12 MOBILE ONLY — desktop unchanged */
+    @media (max-width: 760px) {
+        /* 1. Header -> Data per spacing */
+        .dashboard-header {
+            gap: 2px !important;
+            margin-bottom: 5px !important;
+        }
+        .asof-badge {
+            margin-top: -2px !important;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
+
+        /* 2. Date + Platform shorter */
+        div[data-testid="stDateInput"] label,
+        div[data-testid="stSelectbox"] label {
+            font-size: 8px !important;
+            line-height: 1 !important;
+            margin-bottom: 0 !important;
+            min-height: 9px !important;
+        }
+        div[data-testid="stDateInput"] > div > div,
+        div[data-testid="stSelectbox"] > div > div {
+            height: 31px !important;
+            min-height: 31px !important;
+            border-radius: 8px !important;
+        }
+        div[data-testid="stDateInput"] input,
+        div[data-testid="stSelectbox"] div[role="button"] {
+            font-size: 9px !important;
+            line-height: 1 !important;
+        }
+
+        /* 3. Product + buttons row shorter */
+        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+            gap: 2px 5px !important;
+            margin-top: -2px !important;
+            margin-bottom: 0 !important;
+        }
+        .filter-button-spacer { height: 12px !important; }
+
+        div.stButton > button,
+        div[data-testid="stPopover"] button {
+            height: 31px !important;
+            min-height: 31px !important;
+            border-radius: 8px !important;
+            font-size: 9px !important;
+            line-height: 1 !important;
+            padding: 0 8px !important;
+        }
+
+        /* 4. Refresh button white/light + dark icon */
+        div.stButton > button,
+        div[data-testid="stPopover"] button {
+            background: #FFFFFF !important;
+            color: #25304A !important;
+            border: 1px solid #D9DEE9 !important;
+            box-shadow: 0 2px 7px rgba(25,40,70,.04) !important;
+        }
+        div.stButton > button *,
+        div[data-testid="stPopover"] button * {
+            color: #25304A !important;
+            fill: #25304A !important;
+        }
+
+        /* 5. Section titles 15px */
+        .panel-title,
+        .insight-title {
+            font-size: 15px !important;
+            line-height: 1.15 !important;
+        }
+
+        /* 6. Sales Target Achievement text tuning */
+        .kpi-card .kpi-value.purple {
+            font-size: calc(clamp(29px, 8.1vw, 36px) - 1px) !important;
+        }
+        .kpi-card .subtle {
+            font-size: 10px !important;
+        }
+        .target-stat-label {
+            font-size: 9px !important;
+        }
+
+        /* 7. Sales MTD value -1px */
+        .kpi-card .sales-main .kpi-value {
+            font-size: calc(clamp(29px, 8.1vw, 36px) - 1px) !important;
+        }
+
+        /* 8. Daily Sales Trend legend bold */
+        .st-key-daily_trend_card_mobile .legendtext {
+            font-weight: 700 !important;
+        }
+
+        /* 9. Top 5 auto-height and more bottom padding */
+        .st-key-top_products_card_mobile {
+            height: auto !important;
+            min-height: 0 !important;
+            padding-bottom: 16px !important;
+            overflow: visible !important;
+        }
+        .st-key-top_products_card_mobile > div {
+            height: auto !important;
+            overflow: visible !important;
+        }
+        .mobile-top5-list {
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            padding-bottom: 2px !important;
+        }
+        .mobile-top5-item:last-child {
+            padding-bottom: 2px !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -1815,7 +1931,7 @@ with c1:
                 x=curr_daily["Day"],
                 y=curr_daily["Sales Value"],
                 mode="lines+markers",
-                name="This Month",
+                name="<b>This Month</b>",
                 line=dict(color=PURPLE, width=2.6),
                 marker=dict(size=4, color="#FFFFFF", line=dict(color=PURPLE, width=1.5)),
                 connectgaps=False,
@@ -1827,7 +1943,7 @@ with c1:
                 x=prev_full["Day"],
                 y=prev_full["Sales Value"],
                 mode="lines",
-                name="Last Month",
+                name="<b>Last Month</b>",
                 line=dict(color=PURPLE_LIGHT, width=2.0, dash="dash"),
                 hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
             )
