@@ -1772,6 +1772,29 @@ st.markdown(
         }
     }
 
+
+    /* V16 MOBILE ONLY — rebalance Data per spacing */
+    @media (max-width: 760px) {
+        .dashboard-header {
+            margin-bottom: 10px !important;
+        }
+
+        .asof-badge {
+            margin-top: -8px !important;
+            margin-bottom: 10px !important;
+        }
+    }
+
+
+    /* V17 MOBILE ONLY — enlarge Actual MTD, Monthly Target, and Gap values by 1px */
+    @media (max-width: 760px) {
+        .target-stat:nth-child(1) .target-stat-value,
+        .target-stat:nth-child(2) .target-stat-value,
+        .target-stat:nth-child(3) .target-stat-value {
+            font-size: 11px !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
