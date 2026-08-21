@@ -1,6 +1,8 @@
 
 from pathlib import Path
+from io import BytesIO
 import base64
+import requests
 import html
 import calendar
 from datetime import date, datetime
@@ -1795,6 +1797,27 @@ st.markdown(
         }
     }
 
+
+    /* V19 Admin Mode */
+    @media (max-width: 760px) {
+        .st-key-admin_login_btn button,
+        .st-key-admin_logout_btn button {
+            background: #FFFFFF !important;
+            color: #25304A !important;
+            border: 1px solid #D9DEE9 !important;
+        }
+
+        .st-key-admin_confirm_update button {
+            background: #6538E6 !important;
+            color: #FFFFFF !important;
+            border: 1px solid #6538E6 !important;
+        }
+
+        .st-key-admin_confirm_update button * {
+            color: #FFFFFF !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -1827,6 +1850,74 @@ def image_data_uri(path):
     mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
     encoded = base64.b64encode(path.read_bytes()).decode("ascii")
     return f"data:{mime};base64,{encoded}"
+
+
+def validate_database_bytes(file_bytes):
+    if not file_bytes:
+        return False, "File kosong.", None
+    if len(file_bytes) > 50 * 1024 * 1024:
+        return False, "Ukuran file terlalu besar (maks. 50 MB).", None
+
+    try:
+        sales_check, target_check = load_workbook(BytesIO(file_bytes))
+    except Exception as exc:
+        return False, f"Struktur database tidak valid: {exc}", None
+
+    if sales_check.empty:
+        return False, "Sheet sales tidak boleh kosong.", None
+    if target_check.empty:
+        return False, "Sheet Monthly Sales Target tidak boleh kosong.", None
+
+    max_date = sales_check["Tanggal"].max()
+    info = {
+        "rows": int(len(sales_check)),
+        "max_date": max_date.strftime("%d %b %Y") if pd.notna(max_date) else "—",
+        "sales_value": float(sales_check["Sales Value"].sum()),
+    }
+    return True, "Database valid.", info
+
+
+def github_update_database(file_bytes):
+    owner = st.secrets["GITHUB_OWNER"]
+    repo = st.secrets["GITHUB_REPO"]
+    branch = st.secrets.get("GITHUB_BRANCH", "main")
+    path = st.secrets["DATABASE_PATH"]
+    token = st.secrets["GITHUB_TOKEN"]
+
+    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{path}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+    current = requests.get(api_url, headers=headers, params={"ref": branch}, timeout=30)
+    if current.status_code != 200:
+        raise RuntimeError(f"Gagal membaca file master dari GitHub (HTTP {current.status_code}).")
+
+    sha = current.json().get("sha")
+    if not sha:
+        raise RuntimeError("GitHub tidak mengembalikan SHA file database.")
+
+    payload = {
+        "message": "Update e-commerce dashboard database via Admin Mode",
+        "content": base64.b64encode(file_bytes).decode("ascii"),
+        "sha": sha,
+        "branch": branch,
+    }
+
+    updated = requests.put(api_url, headers=headers, json=payload, timeout=60)
+    if updated.status_code not in (200, 201):
+        try:
+            detail = updated.json().get("message", "")
+        except Exception:
+            detail = ""
+        raise RuntimeError(
+            f"Gagal update database ke GitHub (HTTP {updated.status_code})"
+            + (f": {detail}" if detail else ".")
+        )
+
+    return updated.json()
 
 @st.cache_data(show_spinner=False)
 def load_workbook(source):
@@ -1886,7 +1977,6 @@ def plot_layout(height=330):
 # =========================================================
 default_path = Path(__file__).parent / DB_FILE
 
-uploaded = None
 data_source = default_path
 
 if uploaded is None and not default_path.exists():
@@ -1952,26 +2042,79 @@ with f4:
 
 with f5:
     st.markdown('<div class="filter-button-spacer"></div>', unsafe_allow_html=True)
-    with st.popover("↥ Update", use_container_width=True):
-        uploaded = st.file_uploader(
-            "Upload Excel terbaru",
-            type=["xlsx"],
-            label_visibility="collapsed",
-            help="File harus mempertahankan sheet DB Penjualan Produk 2026 dan Monthly Sales Target.",
-        )
-        st.markdown(
-            '<div class="upload-note">Upload hanya berlaku untuk sesi aktif.</div>',
-            unsafe_allow_html=True,
-        )
 
-if uploaded is not None:
-    try:
-        sales, targets = load_workbook(uploaded)
-        data_max_date = sales["Tanggal"].max().date()
-        data_min_date = sales["Tanggal"].min().date()
-    except Exception as e:
-        st.error(f"Gagal membaca database upload: {e}")
-        st.stop()
+    if "admin_authenticated" not in st.session_state:
+        st.session_state.admin_authenticated = False
+
+    admin_label = "🔒 Admin" if not st.session_state.admin_authenticated else "✓ Admin"
+
+    with st.popover(admin_label, use_container_width=True):
+        if not st.session_state.admin_authenticated:
+            st.markdown("**Admin Mode**")
+            admin_password_input = st.text_input(
+                "Password",
+                type="password",
+                key="admin_password_input",
+                placeholder="Admin password",
+            )
+
+            if st.button("Login", key="admin_login_btn", use_container_width=True):
+                expected_password = st.secrets.get("ADMIN_PASSWORD", "")
+                if expected_password and admin_password_input == expected_password:
+                    st.session_state.admin_authenticated = True
+                    st.session_state.pop("admin_password_input", None)
+                    st.rerun()
+                else:
+                    st.error("Password salah.")
+        else:
+            st.markdown("**Update Database**")
+            st.caption("File akan divalidasi sebelum mengganti database master di GitHub.")
+
+            admin_upload = st.file_uploader(
+                "Upload Excel terbaru",
+                type=["xlsx"],
+                key="admin_database_upload",
+                label_visibility="collapsed",
+                help="Harus mempertahankan sheet DB Penjualan Produk 2026 dan Monthly Sales Target.",
+            )
+
+            if admin_upload is not None:
+                upload_bytes = admin_upload.getvalue()
+                valid, validation_message, validation_info = validate_database_bytes(upload_bytes)
+
+                if valid:
+                    st.success(validation_message)
+                    st.caption(
+                        f"Rows: {validation_info['rows']:,} · "
+                        f"Data terakhir: {validation_info['max_date']} · "
+                        f"Total Sales Value: {rp_jt(validation_info['sales_value'])}"
+                    )
+                    st.warning("Confirm Update akan mengganti database master di GitHub.")
+
+                    if st.button(
+                        "Confirm Update",
+                        key="admin_confirm_update",
+                        type="primary",
+                        use_container_width=True,
+                    ):
+                        try:
+                            with st.spinner("Updating master database..."):
+                                github_update_database(upload_bytes)
+                            st.cache_data.clear()
+                            st.success(
+                                "Database berhasil di-update ke GitHub. "
+                                "Streamlit akan redeploy; data baru biasanya aktif dalam ±1–2 menit."
+                            )
+                            st.session_state.pop("admin_database_upload", None)
+                        except Exception as exc:
+                            st.error(f"Update gagal: {exc}")
+                else:
+                    st.error(validation_message)
+
+            if st.button("Logout Admin", key="admin_logout_btn", use_container_width=True):
+                st.session_state.admin_authenticated = False
+                st.session_state.pop("admin_database_upload", None)
+                st.rerun()
 
 # Render header using the selected dashboard date.
 logo_uri = image_data_uri(Path(__file__).parent / LOGO_FILE)
