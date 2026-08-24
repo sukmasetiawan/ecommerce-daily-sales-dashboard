@@ -2209,6 +2209,46 @@ st.markdown(
         .insight-block + .insight-block { padding-top: 7px !important; }
     }
 
+
+    /* =====================================================
+       V24 — COMPACT LAYOUT CORRECTIONS
+       ===================================================== */
+    @media (min-width: 761px) {
+        /* Fix clipped Target Achievement values while keeping both KPI cards aligned */
+        .kpi-card {
+            min-height: 176px !important;
+            height: 176px !important;
+        }
+
+        /* Ensure the bottom stat values remain fully visible */
+        .target-stats {
+            margin-top: 3px !important;
+        }
+
+        .target-stat-label {
+            margin-bottom: 2px !important;
+            line-height: 1.15 !important;
+        }
+
+        .target-stat-value {
+            line-height: 1.2 !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+        }
+
+        /* Reduce the gap between chart row and Top 5 / Quick Insight row */
+        .section-gap {
+            height: 3px !important;
+        }
+
+        /* Keep Daily Trend and Platform cards visually equal in height */
+        .st-key-daily_trend_card,
+        .st-key-platform_card {
+            min-height: 0 !important;
+            height: auto !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -2820,7 +2860,7 @@ with c1:
             )
         )
 
-        fig.update_layout(**plot_layout(292))
+        fig.update_layout(**plot_layout(215))
         fig.update_xaxes(
             title=None,
             tickmode="linear",
