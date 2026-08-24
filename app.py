@@ -2060,155 +2060,6 @@ st.markdown(
         }
     }
 
-
-    /* V23 — COMPACT NEON DASHBOARD */
-    .block-container {
-        padding-top: 0.15rem !important;
-        padding-bottom: 1.0rem !important;
-    }
-    .dashboard-header { margin-bottom: 6px !important; }
-    .section-gap { height: 8px !important; }
-
-    div[data-testid="stSelectbox"] > div > div,
-    div[data-testid="stDateInput"] > div > div {
-        min-height: 36px !important;
-        height: 36px !important;
-        border-radius: 11px !important;
-    }
-    div[data-testid="stSelectbox"] label,
-    div[data-testid="stDateInput"] label {
-        margin-bottom: 1px !important;
-        font-size: 10px !important;
-    }
-    div.stButton > button,
-    div[data-testid="stPopover"] > button,
-    button[data-testid="baseButton-secondary"] {
-        height: 36px !important;
-        min-height: 36px !important;
-        border-radius: 10px !important;
-    }
-    .filter-button-spacer { height: 16px !important; }
-    .asof-badge {
-        padding: 7px 11px 8px 11px !important;
-        min-width: 122px !important;
-    }
-
-    .kpi-card {
-        min-height: 158px !important;
-        height: 158px !important;
-        padding: 14px 18px !important;
-    }
-    .kpi-grid {
-        grid-template-columns: 90px minmax(0, 1fr) !important;
-        gap: 16px !important;
-    }
-    .kpi-icon {
-        width: 74px !important;
-        height: 74px !important;
-        border-radius: 18px !important;
-        font-size: 30px !important;
-    }
-    .kpi-title { margin: 0 0 5px 0 !important; }
-    .kpi-value { margin: 1px 0 5px 0 !important; }
-    .growth-panel { padding-bottom: 3px !important; }
-    .growth-label { margin-bottom: 3px !important; }
-    .divider { margin: 7px 0 7px 0 !important; }
-    .daily-avg-row { align-items: center !important; }
-    .progress-track {
-        margin: 6px 0 7px 0 !important;
-        height: 6px !important;
-    }
-    .target-stats { margin-top: 2px !important; }
-
-    .st-key-daily_trend_card,
-    .st-key-platform_card,
-    .st-key-top_products_card {
-        padding: 12px 16px 5px 16px !important;
-        border-radius: 17px !important;
-    }
-    .st-key-quick_insight_card {
-        padding: 13px 16px !important;
-        border-radius: 17px !important;
-    }
-    .panel-title { margin-bottom: 0 !important; }
-    .insight-title { margin-bottom: 10px !important; }
-    .insight-block { padding-bottom: 9px !important; }
-    .insight-block + .insight-block { padding-top: 9px !important; }
-
-    .st-key-daily_trend_card::before,
-    .st-key-platform_card::before,
-    .st-key-top_products_card::before,
-    .st-key-quick_insight_card::before {
-        top: 9px !important;
-        right: 11px !important;
-        width: 29px !important;
-        height: 29px !important;
-        border-radius: 9px !important;
-        font-size: 14px !important;
-    }
-
-    .st-key-daily_trend_card [data-testid="stPlotlyChart"],
-    .st-key-platform_card [data-testid="stPlotlyChart"],
-    .st-key-top_products_card [data-testid="stPlotlyChart"] {
-        margin-top: -6px !important;
-        margin-bottom: -7px !important;
-    }
-
-    @media (max-width: 760px) {
-        .block-container {
-            padding: 0.35rem 0.65rem 0.8rem 0.65rem !important;
-        }
-        .dashboard-header { margin-bottom: 4px !important; }
-        .asof-badge {
-            padding: 4px 8px !important;
-            margin-bottom: 7px !important;
-        }
-
-        div[data-testid="stDateInput"] > div > div,
-        div[data-testid="stSelectbox"] > div > div {
-            height: 28px !important;
-            min-height: 28px !important;
-        }
-        div.stButton > button,
-        div[data-testid="stPopover"] button,
-        button[data-testid="baseButton-secondary"] {
-            height: 28px !important;
-            min-height: 28px !important;
-        }
-        .filter-button-spacer { height: 8px !important; }
-
-        .kpi-card {
-            min-height: 0 !important;
-            height: auto !important;
-            padding: 11px 12px !important;
-        }
-        .kpi-grid {
-            grid-template-columns: 54px minmax(0, 1fr) !important;
-            gap: 9px !important;
-        }
-        .kpi-icon {
-            width: 50px !important;
-            height: 50px !important;
-            border-radius: 14px !important;
-            font-size: 22px !important;
-        }
-        .divider { margin: 6px 0 !important; }
-
-        .st-key-daily_trend_card_mobile,
-        .st-key-platform_card_mobile,
-        .st-key-top_products_card_mobile {
-            padding: 10px 10px 5px 10px !important;
-            border-radius: 14px !important;
-        }
-        .st-key-quick_insight_card {
-            padding: 11px 12px !important;
-            border-radius: 14px !important;
-        }
-        .insight-title { margin-bottom: 8px !important; }
-        .insight-block { padding-bottom: 7px !important; }
-        .insight-block + .insight-block { padding-top: 7px !important; }
-    }
-
     </style>
     """,
     unsafe_allow_html=True,
@@ -2872,7 +2723,7 @@ with c1:
         )
         mobile_tickvals = [d for d in [1, 5, 10, 15, 20, 25, 31] if d <= max(current_days["Day"].max(), prev_days["Day"].max())]
         fig_mobile.update_layout(
-            height=175,
+            height=225,
             margin=dict(l=8, r=6, t=52, b=24),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
@@ -2956,8 +2807,8 @@ with c2:
             )
         )
         fig2.update_layout(
-            height=215,
-            margin=dict(l=8, r=8, t=4, b=4),
+            height=292,
+            margin=dict(l=10, r=10, t=8, b=8),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(family="Inter, sans-serif", color=TEXT, size=10),
@@ -3004,7 +2855,7 @@ with c2:
             )
         )
         fig2_mobile.update_layout(
-            height=185,
+            height=235,
             margin=dict(l=4, r=4, t=6, b=44),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
@@ -3070,11 +2921,11 @@ with b1:
                 hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
             )
         )
-        fig3.update_layout(**plot_layout(165))
+        fig3.update_layout(**plot_layout(230))
         fig3.update_layout(
             showlegend=False,
             bargap=.48,
-            margin=dict(l=6, r=110, t=8, b=6),
+            margin=dict(l=8, r=120, t=16, b=12),
         )
         fig3.update_xaxes(showgrid=True, gridcolor=GRID, griddash="dot", zeroline=False, color="#6F7890")
         fig3.update_yaxes(showgrid=False, color="#34415C", tickfont=dict(size=10))
