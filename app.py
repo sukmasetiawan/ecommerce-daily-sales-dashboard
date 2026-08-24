@@ -1,6 +1,7 @@
 
 from pathlib import Path
 from io import BytesIO
+from urllib.parse import quote
 import base64
 import requests
 import html
@@ -1872,9 +1873,62 @@ def validate_database_bytes(file_bytes):
     info = {
         "rows": int(len(sales_check)),
         "max_date": max_date.strftime("%d %b %Y") if pd.notna(max_date) else "—",
+        "max_date_obj": max_date.date() if pd.notna(max_date) else None,
         "sales_value": float(sales_check["Sales Value"].sum()),
     }
     return True, "Database valid.", info
+
+
+def github_fetch_database():
+    """Fetch the latest master Excel directly from GitHub.
+
+    This avoids relying on the stale local repository copy inside a running
+    Streamlit instance.
+    """
+    required = [
+        "GITHUB_OWNER",
+        "GITHUB_REPO",
+        "GITHUB_BRANCH",
+        "DATABASE_PATH",
+        "GITHUB_TOKEN",
+    ]
+    if not all(key in st.secrets for key in required):
+        return None
+
+    owner = st.secrets["GITHUB_OWNER"]
+    repo = st.secrets["GITHUB_REPO"]
+    branch = st.secrets.get("GITHUB_BRANCH", "main")
+    path = st.secrets["DATABASE_PATH"]
+    token = st.secrets["GITHUB_TOKEN"]
+
+    encoded_path = quote(path, safe="/")
+    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{encoded_path}"
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github.raw+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Cache-Control": "no-cache",
+    }
+
+    response = requests.get(
+        api_url,
+        headers=headers,
+        params={"ref": branch, "_ts": datetime.now().timestamp()},
+        timeout=60,
+    )
+
+    if response.status_code != 200:
+        raise RuntimeError(
+            f"Gagal mengambil database terbaru dari GitHub "
+            f"(HTTP {response.status_code})."
+        )
+
+    # An .xlsx file is a ZIP container and normally starts with PK.
+    if not response.content.startswith(b"PK"):
+        raise RuntimeError("Respons GitHub bukan file Excel yang valid.")
+
+    return response.content
 
 
 def github_update_database(file_bytes):
@@ -1884,7 +1938,8 @@ def github_update_database(file_bytes):
     path = st.secrets["DATABASE_PATH"]
     token = st.secrets["GITHUB_TOKEN"]
 
-    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{path}"
+    encoded_path = quote(path, safe="/")
+    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{encoded_path}"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
@@ -1977,14 +2032,25 @@ def plot_layout(height=330):
 # =========================================================
 default_path = Path(__file__).parent / DB_FILE
 
-data_source = default_path
-
-if not default_path.exists():
-    st.error(f"Database default **{DB_FILE}** tidak ditemukan.")
-    st.stop()
+# Always try the GitHub master first. The local Excel bundled with the
+# Streamlit deployment is only a fallback if GitHub is temporarily unavailable.
+try:
+    github_database_bytes = github_fetch_database()
+except Exception as github_exc:
+    github_database_bytes = None
+    github_fetch_error = str(github_exc)
+else:
+    github_fetch_error = None
 
 try:
-    sales, targets = load_workbook(data_source)
+    if github_database_bytes is not None:
+        sales, targets = load_workbook(BytesIO(github_database_bytes))
+        database_source = "GitHub master"
+    else:
+        if not default_path.exists():
+            raise FileNotFoundError(f"Database default **{DB_FILE}** tidak ditemukan.")
+        sales, targets = load_workbook(default_path)
+        database_source = "Local fallback"
 except Exception as e:
     st.error(f"Gagal membaca database: {e}")
     st.stop()
@@ -1995,6 +2061,9 @@ if sales.empty:
 
 data_max_date = sales["Tanggal"].max().date()
 data_min_date = sales["Tanggal"].min().date()
+
+if st.session_state.pop("admin_update_success", False):
+    st.toast("Database berhasil di-update dan dashboard sudah membaca data terbaru.", icon="✅")
 
 # =========================================================
 # HEADER PLACEHOLDER
@@ -2007,11 +2076,22 @@ header_slot = st.empty()
 f1, f2, f3, f4, f5 = st.columns([1.0, 1.0, 1.45, .28, .42], gap="small")
 
 with f1:
+    if "force_latest_date" in st.session_state:
+        st.session_state["date_filter"] = st.session_state.pop("force_latest_date")
+    elif "date_filter" not in st.session_state:
+        st.session_state["date_filter"] = data_max_date
+
+    # Keep the stored filter inside the available database range.
+    if st.session_state["date_filter"] < data_min_date:
+        st.session_state["date_filter"] = data_min_date
+    if st.session_state["date_filter"] > data_max_date:
+        st.session_state["date_filter"] = data_max_date
+
     selected_date = st.date_input(
         "Date",
-        value=data_max_date,
         min_value=data_min_date,
         max_value=data_max_date,
+        key="date_filter",
     )
 
 selected_date = min(selected_date, data_max_date)
@@ -2101,11 +2181,11 @@ with f5:
                             with st.spinner("Updating master database..."):
                                 github_update_database(upload_bytes)
                             st.cache_data.clear()
-                            st.success(
-                                "Database berhasil di-update ke GitHub. "
-                                "Streamlit akan redeploy; data baru biasanya aktif dalam ±1–2 menit."
-                            )
+                            if validation_info.get("max_date_obj") is not None:
+                                st.session_state["force_latest_date"] = validation_info["max_date_obj"]
+                            st.session_state["admin_update_success"] = True
                             st.session_state.pop("admin_database_upload", None)
+                            st.rerun()
                         except Exception as exc:
                             st.error(f"Update gagal: {exc}")
                 else:
