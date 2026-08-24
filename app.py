@@ -2249,6 +2249,24 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V25 — REDUCE GAP BETWEEN CHART ROW AND BOTTOM ROW
+       Desktop only. Card heights remain unchanged.
+       ===================================================== */
+    @media (min-width: 761px) {
+        /* The row spacer after Daily Trend / Sales by Platform was still too tall.
+           Pull the bottom row upward without altering card dimensions. */
+        .section-gap {
+            height: 0 !important;
+            margin: 0 !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
+            margin-top: -8px !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
