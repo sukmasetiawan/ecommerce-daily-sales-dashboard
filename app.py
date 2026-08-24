@@ -1819,6 +1819,247 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V22 — SOFT NEON PREMIUM THEME
+       Unified white→grey card fill, unique neon outline by panel.
+       ===================================================== */
+
+    :root {
+        --card-fill: linear-gradient(145deg, #FFFFFF 0%, #F7F8FB 100%);
+        --page-bg: linear-gradient(135deg, #F7F9FC 0%, #EDF1F7 48%, #E9EEF6 100%);
+        --neon-pink: #FF4FA8;
+        --neon-violet: #9B5CFF;
+        --neon-blue: #4EA1FF;
+        --neon-cyan: #29D3E3;
+        --neon-yellow: #FFD44A;
+        --neon-orange: #FF9A5B;
+        --neon-lilac: #C39BFF;
+    }
+
+    .stApp {
+        background:
+            radial-gradient(circle at 16% 0%, rgba(154, 92, 255, .055), transparent 30%),
+            radial-gradient(circle at 92% 10%, rgba(41, 211, 227, .045), transparent 26%),
+            var(--page-bg) !important;
+    }
+
+    /* Filters and utility boxes: same fill, restrained lavender neon */
+    div[data-testid="stSelectbox"] > div > div,
+    div[data-testid="stDateInput"] > div > div {
+        background: var(--card-fill) !important;
+        border: 1px solid rgba(195, 155, 255, .72) !important;
+        box-shadow:
+            0 0 0 1px rgba(195, 155, 255, .10),
+            0 0 12px rgba(155, 92, 255, .12),
+            0 5px 16px rgba(31,45,72,.045) !important;
+    }
+
+    div.stButton > button,
+    div[data-testid="stPopover"] > button,
+    button[data-testid="baseButton-secondary"] {
+        background: var(--card-fill) !important;
+        border: 1px solid rgba(195, 155, 255, .72) !important;
+        color: #25304A !important;
+        box-shadow:
+            0 0 0 1px rgba(195, 155, 255, .08),
+            0 0 12px rgba(155, 92, 255, .11),
+            0 5px 16px rgba(31,45,72,.04) !important;
+    }
+
+    .asof-badge {
+        background: var(--card-fill) !important;
+        border: 1px solid rgba(195, 155, 255, .78) !important;
+        box-shadow:
+            0 0 0 1px rgba(195, 155, 255, .09),
+            0 0 14px rgba(155, 92, 255, .13),
+            0 5px 16px rgba(83,60,155,.05) !important;
+    }
+
+    /* Base card fill: all major panels use the same white→grey gradient */
+    .card,
+    .st-key-daily_trend_card,
+    .st-key-platform_card,
+    .st-key-top_products_card,
+    .st-key-quick_insight_card,
+    .st-key-daily_trend_card_mobile,
+    .st-key-platform_card_mobile,
+    .st-key-top_products_card_mobile {
+        background: var(--card-fill) !important;
+    }
+
+    /* 1) SALES MTD — pink */
+    .sales-kpi-card {
+        border: 1px solid rgba(255, 79, 168, .82) !important;
+        box-shadow:
+            0 0 0 1px rgba(255,79,168,.08),
+            0 0 15px rgba(255,79,168,.18),
+            0 9px 26px rgba(30,45,75,.06) !important;
+    }
+
+    /* 2) TARGET ACHIEVEMENT — violet */
+    .target-kpi-card {
+        border: 1px solid rgba(155, 92, 255, .82) !important;
+        box-shadow:
+            0 0 0 1px rgba(155,92,255,.08),
+            0 0 15px rgba(155,92,255,.18),
+            0 9px 26px rgba(30,45,75,.06) !important;
+    }
+
+    /* 3) DAILY SALES TREND — blue */
+    .st-key-daily_trend_card,
+    .st-key-daily_trend_card_mobile {
+        position: relative !important;
+        border: 1px solid rgba(78, 161, 255, .85) !important;
+        box-shadow:
+            0 0 0 1px rgba(78,161,255,.07),
+            0 0 15px rgba(78,161,255,.17),
+            0 9px 26px rgba(30,45,75,.055) !important;
+    }
+
+    /* 4) SALES BY PLATFORM — cyan */
+    .st-key-platform_card,
+    .st-key-platform_card_mobile {
+        position: relative !important;
+        border: 1px solid rgba(41, 211, 227, .88) !important;
+        box-shadow:
+            0 0 0 1px rgba(41,211,227,.07),
+            0 0 15px rgba(41,211,227,.18),
+            0 9px 26px rgba(30,45,75,.055) !important;
+    }
+
+    /* 5) TOP 5 PRODUCTS — yellow */
+    .st-key-top_products_card,
+    .st-key-top_products_card_mobile {
+        position: relative !important;
+        border: 1px solid rgba(255, 212, 74, .92) !important;
+        box-shadow:
+            0 0 0 1px rgba(255,212,74,.08),
+            0 0 15px rgba(255,212,74,.19),
+            0 9px 26px rgba(30,45,75,.055) !important;
+    }
+
+    /* 6) QUICK INSIGHT — orange */
+    .st-key-quick_insight_card {
+        position: relative !important;
+        border: 1px solid rgba(255, 154, 91, .90) !important;
+        box-shadow:
+            0 0 0 1px rgba(255,154,91,.08),
+            0 0 15px rgba(255,154,91,.18),
+            0 9px 26px rgba(30,45,75,.055) !important;
+    }
+
+    /* Small corner badges like the approved preview */
+    .st-key-daily_trend_card::before,
+    .st-key-platform_card::before,
+    .st-key-top_products_card::before,
+    .st-key-quick_insight_card::before {
+        position: absolute;
+        z-index: 3;
+        top: 12px;
+        right: 14px;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(145deg, #FFFFFF, #F3F5F9);
+        font-size: 17px;
+        font-weight: 800;
+        line-height: 1;
+        box-shadow: 0 4px 12px rgba(31,45,72,.08);
+    }
+
+    .st-key-daily_trend_card::before {
+        content: "↗";
+        color: #315FD7;
+        border: 1px solid rgba(78,161,255,.32);
+    }
+
+    .st-key-platform_card::before {
+        content: "◔";
+        color: #20AFC2;
+        border: 1px solid rgba(41,211,227,.34);
+    }
+
+    .st-key-top_products_card::before {
+        content: "★";
+        color: #D99F00;
+        border: 1px solid rgba(255,212,74,.42);
+    }
+
+    .st-key-quick_insight_card::before {
+        content: "↗";
+        color: #315FD7;
+        border: 1px solid rgba(255,154,91,.34);
+    }
+
+    /* Keep chart canvases transparent so card gradient remains visible */
+    .st-key-daily_trend_card [data-testid="stPlotlyChart"],
+    .st-key-platform_card [data-testid="stPlotlyChart"],
+    .st-key-top_products_card [data-testid="stPlotlyChart"],
+    .st-key-daily_trend_card_mobile [data-testid="stPlotlyChart"],
+    .st-key-platform_card_mobile [data-testid="stPlotlyChart"] {
+        background: transparent !important;
+    }
+
+    /* Quick Insight now uses same neutral card fill */
+    .st-key-quick_insight_card .insight-block + .insight-block {
+        border-top-color: #D8DEE8 !important;
+    }
+
+    /* Slightly stronger card separation while staying clean */
+    .sales-kpi-card,
+    .target-kpi-card,
+    .st-key-daily_trend_card,
+    .st-key-platform_card,
+    .st-key-top_products_card,
+    .st-key-quick_insight_card {
+        transition: box-shadow .18s ease, transform .18s ease;
+    }
+
+    @media (hover: hover) and (min-width: 761px) {
+        .sales-kpi-card:hover,
+        .target-kpi-card:hover,
+        .st-key-daily_trend_card:hover,
+        .st-key-platform_card:hover,
+        .st-key-top_products_card:hover,
+        .st-key-quick_insight_card:hover {
+            transform: translateY(-1px);
+        }
+    }
+
+    /* Mobile: preserve color identity but reduce glow intensity */
+    @media (max-width: 760px) {
+        .sales-kpi-card {
+            box-shadow: 0 0 10px rgba(255,79,168,.12), 0 6px 20px rgba(30,45,75,.045) !important;
+        }
+        .target-kpi-card {
+            box-shadow: 0 0 10px rgba(155,92,255,.12), 0 6px 20px rgba(30,45,75,.045) !important;
+        }
+        .st-key-daily_trend_card_mobile {
+            box-shadow: 0 0 10px rgba(78,161,255,.12), 0 6px 20px rgba(30,45,75,.045) !important;
+        }
+        .st-key-platform_card_mobile {
+            box-shadow: 0 0 10px rgba(41,211,227,.12), 0 6px 20px rgba(30,45,75,.045) !important;
+        }
+        .st-key-top_products_card_mobile {
+            box-shadow: 0 0 10px rgba(255,212,74,.13), 0 6px 20px rgba(30,45,75,.045) !important;
+        }
+        .st-key-quick_insight_card {
+            box-shadow: 0 0 10px rgba(255,154,91,.12), 0 6px 20px rgba(30,45,75,.045) !important;
+        }
+
+        /* Hide decorative desktop corner icons on mobile to save space */
+        .st-key-daily_trend_card::before,
+        .st-key-platform_card::before,
+        .st-key-top_products_card::before,
+        .st-key-quick_insight_card::before {
+            display: none !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -2282,7 +2523,7 @@ growth_text = "—" if pd.isna(growth) else f"{growth_arrow} {growth:+.1f}%"
 with k1:
     st.markdown(
         f"""
-        <div class="card kpi-card">
+        <div class="card kpi-card sales-kpi-card">
           <div class="kpi-grid">
             <div class="kpi-icon sales">◉</div>
             <div>
@@ -2334,7 +2575,7 @@ with k2:
 
     st.markdown(
         f"""
-        <div class="card kpi-card">
+        <div class="card kpi-card target-kpi-card">
           <div class="kpi-grid">
             <div class="kpi-icon target">◎</div>
             <div>
