@@ -2267,6 +2267,22 @@ st.markdown(
         }
     }
 
+
+    /* V26 — direct bottom-row gap fix */
+    @media (min-width: 761px) {
+        .st-key-top_products_card,
+        .st-key-quick_insight_card {
+            margin-top: -26px !important;
+        }
+
+        .section-gap {
+            height: 0 !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
