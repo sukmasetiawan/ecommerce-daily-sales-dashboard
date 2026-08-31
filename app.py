@@ -2375,6 +2375,69 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V29 — UNIFORM MAJOR ROW SPACING
+       Use direct row/card margins; disable spacer divs.
+       ===================================================== */
+
+    /* Remove legacy spacer elements completely */
+    .section-gap {
+        display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    @media (min-width: 761px) {
+        /* KPI row -> Monthly Sales Trend */
+        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card) {
+            margin-bottom: 12px !important;
+        }
+
+        /* Monthly Sales Trend -> Daily / Platform row */
+        .st-key-monthly_trend_card {
+            margin-bottom: 12px !important;
+        }
+
+        /* Daily / Platform row -> Top 5 / Quick Insight row */
+        div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card):has(.st-key-platform_card) {
+            margin-bottom: 12px !important;
+        }
+
+        /* Kill all old row-shift hacks */
+        .st-key-top_products_card,
+        .st-key-quick_insight_card {
+            margin-top: 0 !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
+            margin-top: 0 !important;
+        }
+    }
+
+    @media (max-width: 760px) {
+        /* Mobile uses the same visual rhythm */
+        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card) {
+            margin-bottom: 8px !important;
+        }
+
+        .st-key-monthly_trend_card {
+            margin-bottom: 8px !important;
+        }
+
+        .st-key-daily_trend_card_mobile,
+        .st-key-platform_card_mobile {
+            margin-bottom: 8px !important;
+        }
+
+        .st-key-top_products_card_mobile,
+        .st-key-quick_insight_card {
+            margin-top: 0 !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
