@@ -2342,6 +2342,39 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V28 — TITLE READABILITY + UNIFORM VERTICAL SPACING
+       ===================================================== */
+    @media (min-width: 761px) {
+        /* One consistent vertical gap between every main dashboard row */
+        .section-gap {
+            height: 10px !important;
+            min-height: 10px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Cancel legacy V25/V26 negative-margin gap fixes */
+        .st-key-top_products_card,
+        .st-key-quick_insight_card {
+            margin-top: 0 !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
+            margin-top: 0 !important;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .section-gap {
+            height: 8px !important;
+            min-height: 8px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -2893,7 +2926,6 @@ st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
 # =========================================================
 # MONTHLY SALES TREND
 # =========================================================
-st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
 
 month_range_start = pd.Timestamp(year=year, month=1, day=1)
 
@@ -2947,7 +2979,7 @@ if selected_ts.day < calendar.monthrange(year, month)[1]:
 with st.container(key="monthly_trend_card", border=False):
     st.markdown(
         f'<div class="panel-title">MONTHLY SALES TREND '
-        f'<span style="font-size:11px;color:#929AAD;font-weight:500">'
+        f'<span style="font-size:11px;color:#17213C;font-weight:500">'
         f'(Jan {year} – {monthly_title_end})</span></div>',
         unsafe_allow_html=True,
     )
@@ -2990,8 +3022,8 @@ with st.container(key="monthly_trend_card", border=False):
         )
 
     fig_monthly.update_layout(
-        height=175,
-        margin=dict(l=8, r=18, t=22, b=26),
+        height=205,
+        margin=dict(l=8, r=18, t=34, b=26),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(family="Inter, sans-serif", color=TEXT, size=10),
@@ -3012,6 +3044,14 @@ with st.container(key="monthly_trend_card", border=False):
         color="#59657B",
         tickfont=dict(size=9, color="#59657B"),
     )
+    monthly_y_max = np.nanmax(
+        np.concatenate([
+            monthly_trend["ActualJt"].to_numpy(dtype=float),
+            monthly_trend["TargetJt"].to_numpy(dtype=float),
+        ])
+    )
+    monthly_y_max = monthly_y_max if np.isfinite(monthly_y_max) and monthly_y_max > 0 else 1
+
     fig_monthly.update_yaxes(
         showgrid=True,
         gridcolor=GRID,
@@ -3020,6 +3060,7 @@ with st.container(key="monthly_trend_card", border=False):
         color="#59657B",
         tickfont=dict(size=9, color="#59657B"),
         title=None,
+        range=[0, monthly_y_max * 1.18],
     )
 
     st.plotly_chart(
@@ -3038,7 +3079,7 @@ c1, c2 = st.columns([1.65, 1.0], gap="medium")
 with c1:
     with st.container(key="daily_trend_card", border=False):
         st.markdown(
-            f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} vs {prev_month_start.strftime("%b %Y")} · Rp jt)</span></div>',
+            f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#17213C;font-weight:500">({selected_ts.strftime("%b %Y")} vs {prev_month_start.strftime("%b %Y")} · Rp jt)</span></div>',
             unsafe_allow_html=True,
         )
 
@@ -3314,7 +3355,7 @@ b1, b2 = st.columns([2.9, 1.0], gap="medium")
 with b1:
     with st.container(key="top_products_card", border=False):
         st.markdown(
-            f'<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD · by Sales Value · Rp jt)</span></div>',
+            f'<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#17213C;font-weight:500">({selected_ts.strftime("%b %Y")} MTD · by Sales Value · Rp jt)</span></div>',
             unsafe_allow_html=True,
         )
 
