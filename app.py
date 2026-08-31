@@ -2482,6 +2482,40 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V31 — SCREENSHOT-CALIBRATED ROW SPACING
+       Final visual correction based on latest rendered output.
+       ===================================================== */
+    @media (min-width: 761px) {
+
+        /* 1) KPI -> Monthly was too tight: add visible breathing room */
+        .st-key-monthly_trend_card {
+            margin-top: 10px !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* 2) Monthly -> Daily/Platform is already close to desired rhythm */
+        div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card):has(.st-key-platform_card) {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* 3) Daily/Platform -> Bottom row was clearly too wide:
+              pull BOTH bottom cards upward equally */
+        .st-key-top_products_card,
+        .st-key-quick_insight_card {
+            margin-top: -13px !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Keep legacy row wrapper margins neutral */
+        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
