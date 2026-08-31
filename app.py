@@ -2283,6 +2283,65 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V27 — MONTHLY SALES TREND
+       ===================================================== */
+    .st-key-monthly_trend_card {
+        background: var(--card-fill) !important;
+        border: 1px solid rgba(62, 190, 105, .88) !important;
+        border-radius: 17px !important;
+        box-shadow:
+            0 0 0 1px rgba(62,190,105,.07),
+            0 0 15px rgba(62,190,105,.17),
+            0 9px 26px rgba(30,45,75,.055) !important;
+        padding: 12px 16px 4px 16px !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+
+    .st-key-monthly_trend_card > div {
+        background: transparent !important;
+    }
+
+    .st-key-monthly_trend_card [data-testid="stPlotlyChart"] {
+        background: transparent !important;
+        margin-top: -5px !important;
+        margin-bottom: -6px !important;
+    }
+
+    .st-key-monthly_trend_card::before {
+        content: "↗";
+        position: absolute;
+        z-index: 3;
+        top: 9px;
+        right: 11px;
+        width: 29px;
+        height: 29px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(145deg, #FFFFFF, #F3F5F9);
+        color: #23A85B;
+        border: 1px solid rgba(62,190,105,.34);
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1;
+        box-shadow: 0 4px 12px rgba(31,45,72,.08);
+    }
+
+    @media (max-width: 760px) {
+        .st-key-monthly_trend_card {
+            padding: 10px 10px 4px 10px !important;
+            border-radius: 14px !important;
+            box-shadow: 0 0 10px rgba(62,190,105,.12), 0 6px 20px rgba(30,45,75,.045) !important;
+        }
+        .st-key-monthly_trend_card::before {
+            display: none !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -2832,6 +2891,146 @@ with k2:
 st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
 
 # =========================================================
+# MONTHLY SALES TREND
+# =========================================================
+st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
+
+month_range_start = pd.Timestamp(year=year, month=1, day=1)
+
+monthly_actual = (
+    filtered[
+        (filtered["Tanggal"] >= month_range_start) &
+        (filtered["Tanggal"] <= selected_ts)
+    ]
+    .assign(
+        MonthNo=lambda x: x["Tanggal"].dt.month,
+        MonthLabel=lambda x: x["Tanggal"].dt.strftime("%b %Y"),
+    )
+    .groupby(["MonthNo", "MonthLabel"], as_index=False)["Sales Value"]
+    .sum()
+)
+
+month_frame = pd.DataFrame({"MonthNo": list(range(1, month + 1))})
+month_frame["MonthLabel"] = [
+    pd.Timestamp(year=year, month=m, day=1).strftime("%b %Y")
+    for m in month_frame["MonthNo"]
+]
+
+monthly_actual = month_frame.merge(
+    monthly_actual[["MonthNo", "Sales Value"]],
+    on="MonthNo",
+    how="left",
+)
+monthly_actual["Sales Value"] = monthly_actual["Sales Value"].fillna(0)
+monthly_actual["ActualJt"] = monthly_actual["Sales Value"] / 1_000_000
+
+monthly_target_trend = targets[
+    (targets["Year"] == year) &
+    (targets["Month No"] <= month)
+][["Month No", "Target Sales Value"]].copy()
+
+monthly_target_trend = monthly_target_trend.rename(columns={"Month No": "MonthNo"})
+monthly_target_trend["TargetJt"] = pd.to_numeric(
+    monthly_target_trend["Target Sales Value"], errors="coerce"
+) / 1_000_000
+
+monthly_trend = monthly_actual.merge(
+    monthly_target_trend[["MonthNo", "TargetJt"]],
+    on="MonthNo",
+    how="left",
+)
+
+monthly_title_end = selected_ts.strftime("%b %Y")
+if selected_ts.day < calendar.monthrange(year, month)[1]:
+    monthly_title_end += " MTD"
+
+with st.container(key="monthly_trend_card", border=False):
+    st.markdown(
+        f'<div class="panel-title">MONTHLY SALES TREND '
+        f'<span style="font-size:11px;color:#929AAD;font-weight:500">'
+        f'(Jan {year} – {monthly_title_end})</span></div>',
+        unsafe_allow_html=True,
+    )
+
+    fig_monthly = go.Figure()
+
+    fig_monthly.add_trace(
+        go.Scatter(
+            x=monthly_trend["MonthLabel"],
+            y=monthly_trend["ActualJt"],
+            mode="lines+markers+text",
+            name="Actual Sales",
+            line=dict(color="#24A85A", width=3),
+            marker=dict(
+                size=7,
+                color="#FFFFFF",
+                line=dict(color="#24A85A", width=2),
+            ),
+            text=[
+                f"{v:,.1f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                for v in monthly_trend["ActualJt"]
+            ],
+            textposition="top center",
+            textfont=dict(size=9, color="#1F6E3C"),
+            hovertemplate="%{x}<br>Actual: Rp %{y:,.1f} jt<extra></extra>",
+        )
+    )
+
+    if is_total_view:
+        fig_monthly.add_trace(
+            go.Scatter(
+                x=monthly_trend["MonthLabel"],
+                y=monthly_trend["TargetJt"],
+                mode="lines+markers",
+                name="Monthly Target",
+                line=dict(color="#9ADBAF", width=2, dash="dash"),
+                marker=dict(size=5, color="#9ADBAF"),
+                hovertemplate="%{x}<br>Target: Rp %{y:,.1f} jt<extra></extra>",
+            )
+        )
+
+    fig_monthly.update_layout(
+        height=175,
+        margin=dict(l=8, r=18, t=22, b=26),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Inter, sans-serif", color=TEXT, size=10),
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            x=0,
+            y=1.10,
+            xanchor="left",
+            yanchor="bottom",
+            font=dict(size=9, color="#4A556D"),
+        ),
+        hovermode="x unified",
+    )
+    fig_monthly.update_xaxes(
+        showgrid=False,
+        zeroline=False,
+        color="#59657B",
+        tickfont=dict(size=9, color="#59657B"),
+    )
+    fig_monthly.update_yaxes(
+        showgrid=True,
+        gridcolor=GRID,
+        griddash="dot",
+        zeroline=False,
+        color="#59657B",
+        tickfont=dict(size=9, color="#59657B"),
+        title=None,
+    )
+
+    st.plotly_chart(
+        fig_monthly,
+        use_container_width=True,
+        config={"displayModeBar": False},
+    )
+
+st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
+
+# =========================================================
 # DAILY SALES TREND
 # =========================================================
 c1, c2 = st.columns([1.65, 1.0], gap="medium")
@@ -2839,7 +3038,7 @@ c1, c2 = st.columns([1.65, 1.0], gap="medium")
 with c1:
     with st.container(key="daily_trend_card", border=False):
         st.markdown(
-            f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
+            f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} vs {prev_month_start.strftime("%b %Y")} · Rp jt)</span></div>',
             unsafe_allow_html=True,
         )
 
@@ -2991,7 +3190,7 @@ with c1:
 with c2:
     with st.container(key="platform_card", border=False):
         st.markdown(
-            '<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">(Share of MTD Sales)</span></div>',
+            f'<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD · Share of Sales)</span></div>',
             unsafe_allow_html=True,
         )
 
@@ -3060,7 +3259,7 @@ with c2:
     # Mobile-only Sales by Platform
     with st.container(key="platform_card_mobile", border=False):
         st.markdown(
-            '<div class="panel-title">SALES BY PLATFORM <span style="font-size:9px;color:#929AAD;font-weight:500">(Share of MTD Sales)</span></div>',
+            f'<div class="panel-title">SALES BY PLATFORM <span style="font-size:9px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD)</span></div>',
             unsafe_allow_html=True,
         )
         fig2_mobile = go.Figure(
@@ -3115,7 +3314,7 @@ b1, b2 = st.columns([2.9, 1.0], gap="medium")
 with b1:
     with st.container(key="top_products_card", border=False):
         st.markdown(
-            '<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#929AAD;font-weight:500">(by Sales Value · Rp jt)</span></div>',
+            f'<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD · by Sales Value · Rp jt)</span></div>',
             unsafe_allow_html=True,
         )
 
@@ -3157,7 +3356,7 @@ with b1:
     # Mobile-only Top 5 list: readable product names, compact bars
     with st.container(key="top_products_card_mobile", border=False):
         st.markdown(
-            '<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:9px;color:#929AAD;font-weight:500">(by Sales Value)</span></div>',
+            f'<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:9px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD)</span></div>',
             unsafe_allow_html=True,
         )
         top5_mobile = top5.sort_values("Sales Value", ascending=False).reset_index(drop=True)
