@@ -2438,6 +2438,50 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V30 — TRUE UNIFORM ROW SPACING
+       The dashboard rows now live inside one keyed container.
+       We control the actual Streamlit VerticalBlock gap directly.
+       ===================================================== */
+
+    /* Disable old artificial spacer styling */
+    .section-gap {
+        display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Neutralize every previous manual row offset */
+    .st-key-monthly_trend_card,
+    .st-key-top_products_card,
+    .st-key-quick_insight_card {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card),
+    div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card):has(.st-key-platform_card),
+    div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* THIS is now the single source of truth for vertical spacing */
+    .st-key-dashboard_rows_wrap > div[data-testid="stVerticalBlock"] {
+        gap: 12px !important;
+        row-gap: 12px !important;
+    }
+
+    @media (max-width: 760px) {
+        .st-key-dashboard_rows_wrap > div[data-testid="stVerticalBlock"] {
+            gap: 8px !important;
+            row-gap: 8px !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -2889,637 +2933,636 @@ required_daily = (
     else np.nan
 )
 
-# =========================================================
-# KPI ROW
-# =========================================================
-k1, k2 = st.columns([1, 1], gap="medium")
+with st.container(key="dashboard_rows_wrap", border=False):
+    # =========================================================
+    # KPI ROW
+    # =========================================================
+    k1, k2 = st.columns([1, 1], gap="medium")
 
-growth_class = "growth negative" if (not pd.isna(growth) and growth < 0) else "growth"
-growth_arrow = "▼" if (not pd.isna(growth) and growth < 0) else "▲"
-growth_text = "—" if pd.isna(growth) else f"{growth_arrow} {growth:+.1f}%"
+    growth_class = "growth negative" if (not pd.isna(growth) and growth < 0) else "growth"
+    growth_arrow = "▼" if (not pd.isna(growth) and growth < 0) else "▲"
+    growth_text = "—" if pd.isna(growth) else f"{growth_arrow} {growth:+.1f}%"
 
-with k1:
-    st.markdown(
-        f"""
-        <div class="card kpi-card sales-kpi-card">
-          <div class="kpi-grid">
-            <div class="kpi-icon sales">◉</div>
-            <div>
-              <div class="kpi-title sales-mobile-title">SALES - MONTH TO DATE</div>
-              <div class="sales-top-row">
-                <div class="sales-main">
-                  <div class="kpi-title sales-desktop-title">SALES - MONTH TO DATE</div>
-                  <div class="kpi-value">{rp_jt(sales_mtd)}</div>
-                </div>
-                <div class="growth-panel">
-                  <div class="growth-label">vs Same Period Last Month</div>
-                  <div class="{growth_class} growth-large">{growth_text}</div>
-                </div>
-              </div>
-              <div class="divider"></div>
-              <div class="daily-avg-row">
-                <div>
-                  <div class="daily-avg-label">Daily Sales Avg</div>
-                  <div class="subtle">({day} days elapsed)</div>
-                </div>
-                <div class="daily-avg-value">{rp_jt(daily_avg)} <span>/day</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-with k2:
-    if is_total_view and not pd.isna(monthly_target):
-        progress = max(0, min(100, achievement))
-        gap_class = "green" if gap <= 0 else "red"
-        gap_display = (
-            f"+{rp_jt(abs(gap))}" if gap < 0 else f"-{rp_jt(abs(gap))}"
-        )
-        achievement_display = pct(achievement)
-        target_note = "Achievement vs Monthly Target"
-        actual_display = rp_jt(sales_mtd)
-        target_display = rp_jt(monthly_target)
-    else:
-        progress = 0
-        gap_class = ""
-        gap_display = "—"
-        achievement_display = "—"
-        target_note = "Available on All Platform + All Product"
-        actual_display = rp_jt(sales_mtd)
-        target_display = rp_jt(monthly_target) if not pd.isna(monthly_target) else "—"
-
-    st.markdown(
-        f"""
-        <div class="card kpi-card target-kpi-card">
-          <div class="kpi-grid">
-            <div class="kpi-icon target">◎</div>
-            <div>
-              <div class="kpi-title">SALES TARGET ACHIEVEMENT</div>
-              <div class="kpi-value purple">{achievement_display}</div>
-              <div class="subtle">{target_note}</div>
-              <div class="progress-track">
-                <div class="progress-fill" style="width:{progress:.1f}%"></div>
-              </div>
-              <div class="target-stats">
-                <div class="target-stat">
-                  <div class="target-stat-label">Actual MTD</div>
-                  <div class="target-stat-value">{actual_display}</div>
-                </div>
-                <div class="target-stat">
-                  <div class="target-stat-label">Monthly Target</div>
-                  <div class="target-stat-value">{target_display}</div>
-                </div>
-                <div class="target-stat">
-                  <div class="target-stat-label">Gap</div>
-                  <div class="target-stat-value {gap_class}">{gap_display}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
-
-# =========================================================
-# MONTHLY SALES TREND
-# =========================================================
-
-month_range_start = pd.Timestamp(year=year, month=1, day=1)
-
-monthly_actual = (
-    filtered[
-        (filtered["Tanggal"] >= month_range_start) &
-        (filtered["Tanggal"] <= selected_ts)
-    ]
-    .assign(
-        MonthNo=lambda x: x["Tanggal"].dt.month,
-        MonthLabel=lambda x: x["Tanggal"].dt.strftime("%b %Y"),
-    )
-    .groupby(["MonthNo", "MonthLabel"], as_index=False)["Sales Value"]
-    .sum()
-)
-
-month_frame = pd.DataFrame({"MonthNo": list(range(1, month + 1))})
-month_frame["MonthLabel"] = [
-    pd.Timestamp(year=year, month=m, day=1).strftime("%b %Y")
-    for m in month_frame["MonthNo"]
-]
-
-monthly_actual = month_frame.merge(
-    monthly_actual[["MonthNo", "Sales Value"]],
-    on="MonthNo",
-    how="left",
-)
-monthly_actual["Sales Value"] = monthly_actual["Sales Value"].fillna(0)
-monthly_actual["ActualJt"] = monthly_actual["Sales Value"] / 1_000_000
-
-monthly_target_trend = targets[
-    (targets["Year"] == year) &
-    (targets["Month No"] <= month)
-][["Month No", "Target Sales Value"]].copy()
-
-monthly_target_trend = monthly_target_trend.rename(columns={"Month No": "MonthNo"})
-monthly_target_trend["TargetJt"] = pd.to_numeric(
-    monthly_target_trend["Target Sales Value"], errors="coerce"
-) / 1_000_000
-
-monthly_trend = monthly_actual.merge(
-    monthly_target_trend[["MonthNo", "TargetJt"]],
-    on="MonthNo",
-    how="left",
-)
-
-monthly_title_end = selected_ts.strftime("%b %Y")
-if selected_ts.day < calendar.monthrange(year, month)[1]:
-    monthly_title_end += " MTD"
-
-with st.container(key="monthly_trend_card", border=False):
-    st.markdown(
-        f'<div class="panel-title">MONTHLY SALES TREND '
-        f'<span style="font-size:11px;color:#17213C;font-weight:500">'
-        f'(Jan {year} – {monthly_title_end})</span></div>',
-        unsafe_allow_html=True,
-    )
-
-    fig_monthly = go.Figure()
-
-    fig_monthly.add_trace(
-        go.Scatter(
-            x=monthly_trend["MonthLabel"],
-            y=monthly_trend["ActualJt"],
-            mode="lines+markers+text",
-            name="Actual Sales",
-            line=dict(color="#24A85A", width=3),
-            marker=dict(
-                size=7,
-                color="#FFFFFF",
-                line=dict(color="#24A85A", width=2),
-            ),
-            text=[
-                f"{v:,.1f}".replace(",", "X").replace(".", ",").replace("X", ".")
-                for v in monthly_trend["ActualJt"]
-            ],
-            textposition="top center",
-            textfont=dict(size=9, color="#1F6E3C"),
-            hovertemplate="%{x}<br>Actual: Rp %{y:,.1f} jt<extra></extra>",
-        )
-    )
-
-    if is_total_view:
-        fig_monthly.add_trace(
-            go.Scatter(
-                x=monthly_trend["MonthLabel"],
-                y=monthly_trend["TargetJt"],
-                mode="lines+markers",
-                name="Monthly Target",
-                line=dict(color="#9ADBAF", width=2, dash="dash"),
-                marker=dict(size=5, color="#9ADBAF"),
-                hovertemplate="%{x}<br>Target: Rp %{y:,.1f} jt<extra></extra>",
-            )
-        )
-
-    fig_monthly.update_layout(
-        height=205,
-        margin=dict(l=8, r=18, t=34, b=26),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Inter, sans-serif", color=TEXT, size=10),
-        showlegend=True,
-        legend=dict(
-            orientation="h",
-            x=0,
-            y=1.10,
-            xanchor="left",
-            yanchor="bottom",
-            font=dict(size=9, color="#4A556D"),
-        ),
-        hovermode="x unified",
-    )
-    fig_monthly.update_xaxes(
-        showgrid=False,
-        zeroline=False,
-        color="#59657B",
-        tickfont=dict(size=9, color="#59657B"),
-    )
-    monthly_y_max = np.nanmax(
-        np.concatenate([
-            monthly_trend["ActualJt"].to_numpy(dtype=float),
-            monthly_trend["TargetJt"].to_numpy(dtype=float),
-        ])
-    )
-    monthly_y_max = monthly_y_max if np.isfinite(monthly_y_max) and monthly_y_max > 0 else 1
-
-    fig_monthly.update_yaxes(
-        showgrid=True,
-        gridcolor=GRID,
-        griddash="dot",
-        zeroline=False,
-        color="#59657B",
-        tickfont=dict(size=9, color="#59657B"),
-        title=None,
-        range=[0, monthly_y_max * 1.18],
-    )
-
-    st.plotly_chart(
-        fig_monthly,
-        use_container_width=True,
-        config={"displayModeBar": False},
-    )
-
-st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
-
-# =========================================================
-# DAILY SALES TREND
-# =========================================================
-c1, c2 = st.columns([1.65, 1.0], gap="medium")
-
-with c1:
-    with st.container(key="daily_trend_card", border=False):
-        st.markdown(
-            f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#17213C;font-weight:500">({selected_ts.strftime("%b %Y")} vs {prev_month_start.strftime("%b %Y")} · Rp jt)</span></div>',
-            unsafe_allow_html=True,
-        )
-
-        curr_daily = (
-            filtered[
-                (filtered["Tanggal"] >= month_start) &
-                (filtered["Tanggal"] <= selected_ts)
-            ]
-            .assign(Day=lambda x: x["Tanggal"].dt.day)
-            .groupby("Day", as_index=False)["Sales Value"].sum()
-        )
-        prev_full = (
-            filtered[
-                (filtered["Tanggal"] >= prev_month_start) &
-                (filtered["Tanggal"] <= prev_month_end)
-            ]
-            .assign(Day=lambda x: x["Tanggal"].dt.day)
-            .groupby("Day", as_index=False)["Sales Value"].sum()
-        )
-
-        current_days = pd.DataFrame({"Day": range(1, calendar.monthrange(year, month)[1] + 1)})
-        prev_days = pd.DataFrame({"Day": range(1, calendar.monthrange(prev_month_start.year, prev_month_start.month)[1] + 1)})
-        curr_daily = current_days.merge(curr_daily, on="Day", how="left")
-        prev_full = prev_days.merge(prev_full, on="Day", how="left")
-
-        # no line after selected date for current month
-        curr_daily.loc[curr_daily["Day"] > day, "Sales Value"] = np.nan
-        curr_daily["Sales Value"] = curr_daily["Sales Value"] / 1_000_000
-        prev_full["Sales Value"] = prev_full["Sales Value"].fillna(0) / 1_000_000
-
-        fig = go.Figure()
-        fig.add_trace(
-            go.Scatter(
-                x=curr_daily["Day"],
-                y=curr_daily["Sales Value"],
-                mode="lines+markers",
-                name=f"This Month ({selected_ts.strftime('%b %Y')})",
-                line=dict(color=PURPLE, width=3),
-                marker=dict(size=5, color="#FFFFFF", line=dict(color=PURPLE, width=1.8)),
-                connectgaps=False,
-                hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
-            )
-        )
-        fig.add_trace(
-            go.Scatter(
-                x=prev_full["Day"],
-                y=prev_full["Sales Value"],
-                mode="lines",
-                name=f"Last Month ({prev_month_start.strftime('%b %Y')})",
-                line=dict(color=PURPLE_LIGHT, width=2.2, dash="dash"),
-                hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
-            )
-        )
-
-        fig.update_layout(**plot_layout(215))
-        fig.update_xaxes(
-            title=None,
-            tickmode="linear",
-            dtick=1,
-            showgrid=False,
-            zeroline=False,
-            color="#6F7890",
-            tickfont=dict(size=9),
-        )
-        fig.update_yaxes(
-            title=None,
-            showgrid=True,
-            gridcolor=GRID,
-            griddash="dot",
-            zeroline=False,
-            color="#6F7890",
-            ticksuffix="",
-        )
-        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
-
-    # Mobile-only Daily Sales Trend (desktop card above is hidden by CSS on mobile)
-    with st.container(key="daily_trend_card_mobile", border=False):
-        st.markdown(
-            '<div class="panel-title">DAILY SALES TREND <span style="font-size:9px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
-            unsafe_allow_html=True,
-        )
-        fig_mobile = go.Figure()
-        fig_mobile.add_trace(
-            go.Scatter(
-                x=curr_daily["Day"],
-                y=curr_daily["Sales Value"],
-                mode="lines+markers",
-                name="<b>This Month</b>",
-                line=dict(color=PURPLE, width=2.6),
-                marker=dict(size=4, color="#FFFFFF", line=dict(color=PURPLE, width=1.5)),
-                connectgaps=False,
-                hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
-            )
-        )
-        fig_mobile.add_trace(
-            go.Scatter(
-                x=prev_full["Day"],
-                y=prev_full["Sales Value"],
-                mode="lines",
-                name="<b>Last Month</b>",
-                line=dict(color=PURPLE_LIGHT, width=2.0, dash="dash"),
-                hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
-            )
-        )
-        mobile_tickvals = [d for d in [1, 5, 10, 15, 20, 25, 31] if d <= max(current_days["Day"].max(), prev_days["Day"].max())]
-        fig_mobile.update_layout(
-            height=175,
-            margin=dict(l=8, r=6, t=52, b=24),
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", color="#4A556D", size=9),
-            hoverlabel=dict(bgcolor="#FFFFFF", font_color=NAVY, bordercolor="#E0E3EB"),
-            legend=dict(
-                orientation="h",
-                x=0,
-                y=1.06,
-                xanchor="left",
-                yanchor="bottom",
-                font=dict(size=9, color="#4A556D"),
-                bgcolor="rgba(0,0,0,0)",
-            ),
-        )
-        fig_mobile.update_xaxes(
-            title=None,
-            tickmode="array",
-            tickvals=mobile_tickvals,
-            ticktext=[str(v) for v in mobile_tickvals],
-            range=[0.5, max(current_days["Day"].max(), prev_days["Day"].max()) + 0.5],
-            showgrid=False,
-            zeroline=False,
-            color="#4A556D",
-            tickfont=dict(size=8, color="#4A556D"),
-        )
-        fig_mobile.update_yaxes(
-            title=None,
-            showgrid=True,
-            gridcolor=GRID,
-            griddash="dot",
-            zeroline=False,
-            color="#4A556D",
-            tickfont=dict(size=8, color="#4A556D"),
-            nticks=5,
-        )
-        st.plotly_chart(fig_mobile, use_container_width=True, config={"displayModeBar": False})
-
-# =========================================================
-# SALES BY PLATFORM
-# =========================================================
-with c2:
-    with st.container(key="platform_card", border=False):
-        st.markdown(
-            f'<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD · Share of Sales)</span></div>',
-            unsafe_allow_html=True,
-        )
-
-        by_platform = (
-            mtd.groupby("Platform Group", as_index=False)["Sales Value"]
-            .sum()
-            .set_index("Platform Group")
-            .reindex(PLATFORM_ORDER, fill_value=0)
-            .reset_index()
-        )
-        total_platform = by_platform["Sales Value"].sum()
-        by_platform["Share"] = np.where(
-            total_platform != 0,
-            by_platform["Sales Value"] / total_platform * 100,
-            0,
-        )
-        by_platform["ValueJt"] = by_platform["Sales Value"] / 1_000_000
-
-        platform_text = [
-            f"{rp_jt(v)}<br><span style='font-size:10px'>{s:.1f}%</span>"
-            for v, s in zip(by_platform["Sales Value"], by_platform["Share"])
-        ]
-
-        fig2 = go.Figure(
-            go.Pie(
-                labels=by_platform["Platform Group"],
-                values=by_platform["Sales Value"],
-                hole=0.58,
-                sort=False,
-                direction="clockwise",
-                marker=dict(colors=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]]),
-                textinfo="percent",
-                textposition="inside",
-                textfont=dict(size=12, color="#FFFFFF", family="Inter, sans-serif"),
-                hovertemplate="<b>%{label}</b><br>Rp %{value:,.0f}<br>%{percent}<extra></extra>",
-            )
-        )
-        fig2.update_layout(
-            height=215,
-            margin=dict(l=8, r=8, t=4, b=4),
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", color=TEXT, size=10),
-            showlegend=True,
-            legend=dict(
-                orientation="v",
-                x=1.02,
-                y=0.5,
-                xanchor="left",
-                yanchor="middle",
-                font=dict(size=10, color="#4A556D"),
-            ),
-            annotations=[
-                dict(
-                    text=f"<b>{rp_jt(total_platform)}</b><br><span style='font-size:10px'>MTD Sales</span>",
-                    x=0.5,
-                    y=0.5,
-                    showarrow=False,
-                    align="center",
-                    font=dict(size=14, color=NAVY, family="Inter, sans-serif"),
-                )
-            ],
-        )
-        st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
-
-    # Mobile-only Sales by Platform
-    with st.container(key="platform_card_mobile", border=False):
-        st.markdown(
-            f'<div class="panel-title">SALES BY PLATFORM <span style="font-size:9px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD)</span></div>',
-            unsafe_allow_html=True,
-        )
-        fig2_mobile = go.Figure(
-            go.Pie(
-                labels=by_platform["Platform Group"],
-                values=by_platform["Sales Value"],
-                hole=0.60,
-                sort=False,
-                direction="clockwise",
-                marker=dict(colors=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]]),
-                textinfo="percent",
-                textposition="inside",
-                textfont=dict(size=10, color="#FFFFFF", family="Inter, sans-serif"),
-                hovertemplate="<b>%{label}</b><br>Rp %{value:,.0f}<br>%{percent}<extra></extra>",
-            )
-        )
-        fig2_mobile.update_layout(
-            height=185,
-            margin=dict(l=4, r=4, t=6, b=44),
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(family="Inter, sans-serif", color="#4A556D", size=9),
-            showlegend=True,
-            legend=dict(
-                orientation="h",
-                x=0.5,
-                y=-0.08,
-                xanchor="center",
-                yanchor="top",
-                font=dict(size=9, color="#4A556D"),
-            ),
-            annotations=[
-                dict(
-                    text=f"<b>{rp_jt(total_platform)}</b><br><span style='font-size:9px'>MTD Sales</span>",
-                    x=0.5,
-                    y=0.53,
-                    showarrow=False,
-                    align="center",
-                    font=dict(size=12, color=NAVY, family="Inter, sans-serif"),
-                )
-            ],
-        )
-        st.plotly_chart(fig2_mobile, use_container_width=True, config={"displayModeBar": False})
-
-st.markdown('<div class="section-gap"></div>', unsafe_allow_html=True)
-
-# =========================================================
-# TOP 5 PRODUCTS + QUICK INSIGHT
-# =========================================================
-b1, b2 = st.columns([2.9, 1.0], gap="medium")
-
-with b1:
-    with st.container(key="top_products_card", border=False):
-        st.markdown(
-            f'<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#17213C;font-weight:500">({selected_ts.strftime("%b %Y")} MTD · by Sales Value · Rp jt)</span></div>',
-            unsafe_allow_html=True,
-        )
-
-        top5 = (
-            mtd.groupby("Product", as_index=False)["Sales Value"]
-            .sum()
-            .sort_values("Sales Value", ascending=False)
-            .head(5)
-            .sort_values("Sales Value", ascending=True)
-        )
-        total_mtd_for_share = float(mtd["Sales Value"].sum())
-        top5["Share"] = np.where(total_mtd_for_share != 0, top5["Sales Value"] / total_mtd_for_share * 100, 0)
-        top5["ValueJt"] = top5["Sales Value"] / 1_000_000
-
-        top_colors = ["#F4B51F", "#4BC675", "#4E85EB", "#8A5AE2", "#EF347D"][:len(top5)]
-
-        fig3 = go.Figure(
-            go.Bar(
-                y=top5["Product"],
-                x=top5["ValueJt"],
-                orientation="h",
-                marker_color=top_colors,
-                text=[f"{rp_jt(v)}  ·  {s:.1f}%" for v, s in zip(top5["Sales Value"], top5["Share"])],
-                textposition="outside",
-                cliponaxis=False,
-                hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
-            )
-        )
-        fig3.update_layout(**plot_layout(165))
-        fig3.update_layout(
-            showlegend=False,
-            bargap=.48,
-            margin=dict(l=6, r=110, t=8, b=6),
-        )
-        fig3.update_xaxes(showgrid=True, gridcolor=GRID, griddash="dot", zeroline=False, color="#6F7890")
-        fig3.update_yaxes(showgrid=False, color="#34415C", tickfont=dict(size=10))
-        st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar": False})
-
-    # Mobile-only Top 5 list: readable product names, compact bars
-    with st.container(key="top_products_card_mobile", border=False):
-        st.markdown(
-            f'<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:9px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD)</span></div>',
-            unsafe_allow_html=True,
-        )
-        top5_mobile = top5.sort_values("Sales Value", ascending=False).reset_index(drop=True)
-        max_top5_value = float(top5_mobile["Sales Value"].max()) if not top5_mobile.empty else 1.0
-        mobile_colors = ["#EF347D", "#8A5AE2", "#4E85EB", "#4BC675", "#F4B51F"]
-        mobile_items = []
-        for idx, row in top5_mobile.iterrows():
-            width_pct = (float(row["Sales Value"]) / max_top5_value * 100) if max_top5_value else 0
-            product_name = html.escape(str(row["Product"]))
-            value_text = html.escape(f"{rp_jt(row['Sales Value'])} · {row['Share']:.1f}%")
-            color = mobile_colors[idx % len(mobile_colors)]
-            item_html = (
-                f'<div class="mobile-top5-item">'
-                f'<div class="mobile-top5-head">'
-                f'<span class="mobile-rank" style="background:{color}">{idx+1}</span>'
-                f'<span class="mobile-product-name">{product_name}</span>'
-                f'<span class="mobile-product-value">{value_text}</span>'
-                f'</div>'
-                f'<div class="mobile-product-bar">'
-                f'<span style="width:{width_pct:.1f}%;background:{color}"></span>'
-                f'</div>'
-                f'</div>'
-            )
-            mobile_items.append(item_html)
-        st.markdown('<div class="mobile-top5-list">' + ''.join(mobile_items) + '</div>', unsafe_allow_html=True)
-
-with b2:
-    if is_total_view and not pd.isna(required_daily):
-        pace_msg = "Current pace is above required pace." if daily_avg >= required_daily else "Current pace is below required pace."
-        req_value = rp_jt(required_daily)
-        req_note = f"Based on {remaining_days} days remaining"
-    elif is_total_view and remaining_days == 0 and not pd.isna(monthly_target):
-        pace_msg = "Month has reached its final day."
-        req_value = "—"
-        req_note = "No remaining selling days"
-    else:
-        pace_msg = "Target pace is shown on total view."
-        req_value = "—"
-        req_note = "Select All Platform + All Product"
-
-    with st.container(key="quick_insight_card", border=False):
+    with k1:
         st.markdown(
             f"""
-            <div class="insight-content">
-              <div class="insight-title">💡 QUICK INSIGHT</div>
-              <div class="insight-block">
-                <div class="insight-label">Sales pace (Daily Avg)</div>
-                <div class="insight-value">{rp_jt(daily_avg)}/day</div>
-                <div class="insight-note">{pace_msg}</div>
-              </div>
-              <div class="insight-block">
-                <div class="insight-label">Required daily sales to reach monthly target</div>
-                <div class="insight-value">{req_value}/day</div>
-                <div class="insight-note">{req_note}</div>
+            <div class="card kpi-card sales-kpi-card">
+              <div class="kpi-grid">
+                <div class="kpi-icon sales">◉</div>
+                <div>
+                  <div class="kpi-title sales-mobile-title">SALES - MONTH TO DATE</div>
+                  <div class="sales-top-row">
+                    <div class="sales-main">
+                      <div class="kpi-title sales-desktop-title">SALES - MONTH TO DATE</div>
+                      <div class="kpi-value">{rp_jt(sales_mtd)}</div>
+                    </div>
+                    <div class="growth-panel">
+                      <div class="growth-label">vs Same Period Last Month</div>
+                      <div class="{growth_class} growth-large">{growth_text}</div>
+                    </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="daily-avg-row">
+                    <div>
+                      <div class="daily-avg-label">Daily Sales Avg</div>
+                      <div class="subtle">({day} days elapsed)</div>
+                    </div>
+                    <div class="daily-avg-value">{rp_jt(daily_avg)} <span>/day</span></div>
+                  </div>
+                </div>
               </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
+
+    with k2:
+        if is_total_view and not pd.isna(monthly_target):
+            progress = max(0, min(100, achievement))
+            gap_class = "green" if gap <= 0 else "red"
+            gap_display = (
+                f"+{rp_jt(abs(gap))}" if gap < 0 else f"-{rp_jt(abs(gap))}"
+            )
+            achievement_display = pct(achievement)
+            target_note = "Achievement vs Monthly Target"
+            actual_display = rp_jt(sales_mtd)
+            target_display = rp_jt(monthly_target)
+        else:
+            progress = 0
+            gap_class = ""
+            gap_display = "—"
+            achievement_display = "—"
+            target_note = "Available on All Platform + All Product"
+            actual_display = rp_jt(sales_mtd)
+            target_display = rp_jt(monthly_target) if not pd.isna(monthly_target) else "—"
+
+        st.markdown(
+            f"""
+            <div class="card kpi-card target-kpi-card">
+              <div class="kpi-grid">
+                <div class="kpi-icon target">◎</div>
+                <div>
+                  <div class="kpi-title">SALES TARGET ACHIEVEMENT</div>
+                  <div class="kpi-value purple">{achievement_display}</div>
+                  <div class="subtle">{target_note}</div>
+                  <div class="progress-track">
+                    <div class="progress-fill" style="width:{progress:.1f}%"></div>
+                  </div>
+                  <div class="target-stats">
+                    <div class="target-stat">
+                      <div class="target-stat-label">Actual MTD</div>
+                      <div class="target-stat-value">{actual_display}</div>
+                    </div>
+                    <div class="target-stat">
+                      <div class="target-stat-label">Monthly Target</div>
+                      <div class="target-stat-value">{target_display}</div>
+                    </div>
+                    <div class="target-stat">
+                      <div class="target-stat-label">Gap</div>
+                      <div class="target-stat-value {gap_class}">{gap_display}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+    # =========================================================
+    # MONTHLY SALES TREND
+    # =========================================================
+
+    month_range_start = pd.Timestamp(year=year, month=1, day=1)
+
+    monthly_actual = (
+        filtered[
+            (filtered["Tanggal"] >= month_range_start) &
+            (filtered["Tanggal"] <= selected_ts)
+        ]
+        .assign(
+            MonthNo=lambda x: x["Tanggal"].dt.month,
+            MonthLabel=lambda x: x["Tanggal"].dt.strftime("%b %Y"),
+        )
+        .groupby(["MonthNo", "MonthLabel"], as_index=False)["Sales Value"]
+        .sum()
+    )
+
+    month_frame = pd.DataFrame({"MonthNo": list(range(1, month + 1))})
+    month_frame["MonthLabel"] = [
+        pd.Timestamp(year=year, month=m, day=1).strftime("%b %Y")
+        for m in month_frame["MonthNo"]
+    ]
+
+    monthly_actual = month_frame.merge(
+        monthly_actual[["MonthNo", "Sales Value"]],
+        on="MonthNo",
+        how="left",
+    )
+    monthly_actual["Sales Value"] = monthly_actual["Sales Value"].fillna(0)
+    monthly_actual["ActualJt"] = monthly_actual["Sales Value"] / 1_000_000
+
+    monthly_target_trend = targets[
+        (targets["Year"] == year) &
+        (targets["Month No"] <= month)
+    ][["Month No", "Target Sales Value"]].copy()
+
+    monthly_target_trend = monthly_target_trend.rename(columns={"Month No": "MonthNo"})
+    monthly_target_trend["TargetJt"] = pd.to_numeric(
+        monthly_target_trend["Target Sales Value"], errors="coerce"
+    ) / 1_000_000
+
+    monthly_trend = monthly_actual.merge(
+        monthly_target_trend[["MonthNo", "TargetJt"]],
+        on="MonthNo",
+        how="left",
+    )
+
+    monthly_title_end = selected_ts.strftime("%b %Y")
+    if selected_ts.day < calendar.monthrange(year, month)[1]:
+        monthly_title_end += " MTD"
+
+    with st.container(key="monthly_trend_card", border=False):
+        st.markdown(
+            f'<div class="panel-title">MONTHLY SALES TREND '
+            f'<span style="font-size:11px;color:#17213C;font-weight:500">'
+            f'(Jan {year} – {monthly_title_end})</span></div>',
+            unsafe_allow_html=True,
+        )
+
+        fig_monthly = go.Figure()
+
+        fig_monthly.add_trace(
+            go.Scatter(
+                x=monthly_trend["MonthLabel"],
+                y=monthly_trend["ActualJt"],
+                mode="lines+markers+text",
+                name="Actual Sales",
+                line=dict(color="#24A85A", width=3),
+                marker=dict(
+                    size=7,
+                    color="#FFFFFF",
+                    line=dict(color="#24A85A", width=2),
+                ),
+                text=[
+                    f"{v:,.1f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                    for v in monthly_trend["ActualJt"]
+                ],
+                textposition="top center",
+                textfont=dict(size=9, color="#1F6E3C"),
+                hovertemplate="%{x}<br>Actual: Rp %{y:,.1f} jt<extra></extra>",
+            )
+        )
+
+        if is_total_view:
+            fig_monthly.add_trace(
+                go.Scatter(
+                    x=monthly_trend["MonthLabel"],
+                    y=monthly_trend["TargetJt"],
+                    mode="lines+markers",
+                    name="Monthly Target",
+                    line=dict(color="#9ADBAF", width=2, dash="dash"),
+                    marker=dict(size=5, color="#9ADBAF"),
+                    hovertemplate="%{x}<br>Target: Rp %{y:,.1f} jt<extra></extra>",
+                )
+            )
+
+        fig_monthly.update_layout(
+            height=205,
+            margin=dict(l=8, r=18, t=34, b=26),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(family="Inter, sans-serif", color=TEXT, size=10),
+            showlegend=True,
+            legend=dict(
+                orientation="h",
+                x=0,
+                y=1.10,
+                xanchor="left",
+                yanchor="bottom",
+                font=dict(size=9, color="#4A556D"),
+            ),
+            hovermode="x unified",
+        )
+        fig_monthly.update_xaxes(
+            showgrid=False,
+            zeroline=False,
+            color="#59657B",
+            tickfont=dict(size=9, color="#59657B"),
+        )
+        monthly_y_max = np.nanmax(
+            np.concatenate([
+                monthly_trend["ActualJt"].to_numpy(dtype=float),
+                monthly_trend["TargetJt"].to_numpy(dtype=float),
+            ])
+        )
+        monthly_y_max = monthly_y_max if np.isfinite(monthly_y_max) and monthly_y_max > 0 else 1
+
+        fig_monthly.update_yaxes(
+            showgrid=True,
+            gridcolor=GRID,
+            griddash="dot",
+            zeroline=False,
+            color="#59657B",
+            tickfont=dict(size=9, color="#59657B"),
+            title=None,
+            range=[0, monthly_y_max * 1.18],
+        )
+
+        st.plotly_chart(
+            fig_monthly,
+            use_container_width=True,
+            config={"displayModeBar": False},
+        )
+
+
+    # =========================================================
+    # DAILY SALES TREND
+    # =========================================================
+    c1, c2 = st.columns([1.65, 1.0], gap="medium")
+
+    with c1:
+        with st.container(key="daily_trend_card", border=False):
+            st.markdown(
+                f'<div class="panel-title">DAILY SALES TREND <span style="font-size:11px;color:#17213C;font-weight:500">({selected_ts.strftime("%b %Y")} vs {prev_month_start.strftime("%b %Y")} · Rp jt)</span></div>',
+                unsafe_allow_html=True,
+            )
+
+            curr_daily = (
+                filtered[
+                    (filtered["Tanggal"] >= month_start) &
+                    (filtered["Tanggal"] <= selected_ts)
+                ]
+                .assign(Day=lambda x: x["Tanggal"].dt.day)
+                .groupby("Day", as_index=False)["Sales Value"].sum()
+            )
+            prev_full = (
+                filtered[
+                    (filtered["Tanggal"] >= prev_month_start) &
+                    (filtered["Tanggal"] <= prev_month_end)
+                ]
+                .assign(Day=lambda x: x["Tanggal"].dt.day)
+                .groupby("Day", as_index=False)["Sales Value"].sum()
+            )
+
+            current_days = pd.DataFrame({"Day": range(1, calendar.monthrange(year, month)[1] + 1)})
+            prev_days = pd.DataFrame({"Day": range(1, calendar.monthrange(prev_month_start.year, prev_month_start.month)[1] + 1)})
+            curr_daily = current_days.merge(curr_daily, on="Day", how="left")
+            prev_full = prev_days.merge(prev_full, on="Day", how="left")
+
+            # no line after selected date for current month
+            curr_daily.loc[curr_daily["Day"] > day, "Sales Value"] = np.nan
+            curr_daily["Sales Value"] = curr_daily["Sales Value"] / 1_000_000
+            prev_full["Sales Value"] = prev_full["Sales Value"].fillna(0) / 1_000_000
+
+            fig = go.Figure()
+            fig.add_trace(
+                go.Scatter(
+                    x=curr_daily["Day"],
+                    y=curr_daily["Sales Value"],
+                    mode="lines+markers",
+                    name=f"This Month ({selected_ts.strftime('%b %Y')})",
+                    line=dict(color=PURPLE, width=3),
+                    marker=dict(size=5, color="#FFFFFF", line=dict(color=PURPLE, width=1.8)),
+                    connectgaps=False,
+                    hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=prev_full["Day"],
+                    y=prev_full["Sales Value"],
+                    mode="lines",
+                    name=f"Last Month ({prev_month_start.strftime('%b %Y')})",
+                    line=dict(color=PURPLE_LIGHT, width=2.2, dash="dash"),
+                    hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+                )
+            )
+
+            fig.update_layout(**plot_layout(215))
+            fig.update_xaxes(
+                title=None,
+                tickmode="linear",
+                dtick=1,
+                showgrid=False,
+                zeroline=False,
+                color="#6F7890",
+                tickfont=dict(size=9),
+            )
+            fig.update_yaxes(
+                title=None,
+                showgrid=True,
+                gridcolor=GRID,
+                griddash="dot",
+                zeroline=False,
+                color="#6F7890",
+                ticksuffix="",
+            )
+            st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+
+        # Mobile-only Daily Sales Trend (desktop card above is hidden by CSS on mobile)
+        with st.container(key="daily_trend_card_mobile", border=False):
+            st.markdown(
+                '<div class="panel-title">DAILY SALES TREND <span style="font-size:9px;color:#929AAD;font-weight:500">(Rp jt)</span></div>',
+                unsafe_allow_html=True,
+            )
+            fig_mobile = go.Figure()
+            fig_mobile.add_trace(
+                go.Scatter(
+                    x=curr_daily["Day"],
+                    y=curr_daily["Sales Value"],
+                    mode="lines+markers",
+                    name="<b>This Month</b>",
+                    line=dict(color=PURPLE, width=2.6),
+                    marker=dict(size=4, color="#FFFFFF", line=dict(color=PURPLE, width=1.5)),
+                    connectgaps=False,
+                    hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+                )
+            )
+            fig_mobile.add_trace(
+                go.Scatter(
+                    x=prev_full["Day"],
+                    y=prev_full["Sales Value"],
+                    mode="lines",
+                    name="<b>Last Month</b>",
+                    line=dict(color=PURPLE_LIGHT, width=2.0, dash="dash"),
+                    hovertemplate="Day %{x}<br>Rp %{y:,.1f} jt<extra></extra>",
+                )
+            )
+            mobile_tickvals = [d for d in [1, 5, 10, 15, 20, 25, 31] if d <= max(current_days["Day"].max(), prev_days["Day"].max())]
+            fig_mobile.update_layout(
+                height=175,
+                margin=dict(l=8, r=6, t=52, b=24),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(family="Inter, sans-serif", color="#4A556D", size=9),
+                hoverlabel=dict(bgcolor="#FFFFFF", font_color=NAVY, bordercolor="#E0E3EB"),
+                legend=dict(
+                    orientation="h",
+                    x=0,
+                    y=1.06,
+                    xanchor="left",
+                    yanchor="bottom",
+                    font=dict(size=9, color="#4A556D"),
+                    bgcolor="rgba(0,0,0,0)",
+                ),
+            )
+            fig_mobile.update_xaxes(
+                title=None,
+                tickmode="array",
+                tickvals=mobile_tickvals,
+                ticktext=[str(v) for v in mobile_tickvals],
+                range=[0.5, max(current_days["Day"].max(), prev_days["Day"].max()) + 0.5],
+                showgrid=False,
+                zeroline=False,
+                color="#4A556D",
+                tickfont=dict(size=8, color="#4A556D"),
+            )
+            fig_mobile.update_yaxes(
+                title=None,
+                showgrid=True,
+                gridcolor=GRID,
+                griddash="dot",
+                zeroline=False,
+                color="#4A556D",
+                tickfont=dict(size=8, color="#4A556D"),
+                nticks=5,
+            )
+            st.plotly_chart(fig_mobile, use_container_width=True, config={"displayModeBar": False})
+
+    # =========================================================
+    # SALES BY PLATFORM
+    # =========================================================
+    with c2:
+        with st.container(key="platform_card", border=False):
+            st.markdown(
+                f'<div class="panel-title">SALES BY PLATFORM <span style="font-size:11px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD · Share of Sales)</span></div>',
+                unsafe_allow_html=True,
+            )
+
+            by_platform = (
+                mtd.groupby("Platform Group", as_index=False)["Sales Value"]
+                .sum()
+                .set_index("Platform Group")
+                .reindex(PLATFORM_ORDER, fill_value=0)
+                .reset_index()
+            )
+            total_platform = by_platform["Sales Value"].sum()
+            by_platform["Share"] = np.where(
+                total_platform != 0,
+                by_platform["Sales Value"] / total_platform * 100,
+                0,
+            )
+            by_platform["ValueJt"] = by_platform["Sales Value"] / 1_000_000
+
+            platform_text = [
+                f"{rp_jt(v)}<br><span style='font-size:10px'>{s:.1f}%</span>"
+                for v, s in zip(by_platform["Sales Value"], by_platform["Share"])
+            ]
+
+            fig2 = go.Figure(
+                go.Pie(
+                    labels=by_platform["Platform Group"],
+                    values=by_platform["Sales Value"],
+                    hole=0.58,
+                    sort=False,
+                    direction="clockwise",
+                    marker=dict(colors=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]]),
+                    textinfo="percent",
+                    textposition="inside",
+                    textfont=dict(size=12, color="#FFFFFF", family="Inter, sans-serif"),
+                    hovertemplate="<b>%{label}</b><br>Rp %{value:,.0f}<br>%{percent}<extra></extra>",
+                )
+            )
+            fig2.update_layout(
+                height=215,
+                margin=dict(l=8, r=8, t=4, b=4),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(family="Inter, sans-serif", color=TEXT, size=10),
+                showlegend=True,
+                legend=dict(
+                    orientation="v",
+                    x=1.02,
+                    y=0.5,
+                    xanchor="left",
+                    yanchor="middle",
+                    font=dict(size=10, color="#4A556D"),
+                ),
+                annotations=[
+                    dict(
+                        text=f"<b>{rp_jt(total_platform)}</b><br><span style='font-size:10px'>MTD Sales</span>",
+                        x=0.5,
+                        y=0.5,
+                        showarrow=False,
+                        align="center",
+                        font=dict(size=14, color=NAVY, family="Inter, sans-serif"),
+                    )
+                ],
+            )
+            st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
+
+        # Mobile-only Sales by Platform
+        with st.container(key="platform_card_mobile", border=False):
+            st.markdown(
+                f'<div class="panel-title">SALES BY PLATFORM <span style="font-size:9px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD)</span></div>',
+                unsafe_allow_html=True,
+            )
+            fig2_mobile = go.Figure(
+                go.Pie(
+                    labels=by_platform["Platform Group"],
+                    values=by_platform["Sales Value"],
+                    hole=0.60,
+                    sort=False,
+                    direction="clockwise",
+                    marker=dict(colors=[PLATFORM_COLORS[p] for p in by_platform["Platform Group"]]),
+                    textinfo="percent",
+                    textposition="inside",
+                    textfont=dict(size=10, color="#FFFFFF", family="Inter, sans-serif"),
+                    hovertemplate="<b>%{label}</b><br>Rp %{value:,.0f}<br>%{percent}<extra></extra>",
+                )
+            )
+            fig2_mobile.update_layout(
+                height=185,
+                margin=dict(l=4, r=4, t=6, b=44),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                font=dict(family="Inter, sans-serif", color="#4A556D", size=9),
+                showlegend=True,
+                legend=dict(
+                    orientation="h",
+                    x=0.5,
+                    y=-0.08,
+                    xanchor="center",
+                    yanchor="top",
+                    font=dict(size=9, color="#4A556D"),
+                ),
+                annotations=[
+                    dict(
+                        text=f"<b>{rp_jt(total_platform)}</b><br><span style='font-size:9px'>MTD Sales</span>",
+                        x=0.5,
+                        y=0.53,
+                        showarrow=False,
+                        align="center",
+                        font=dict(size=12, color=NAVY, family="Inter, sans-serif"),
+                    )
+                ],
+            )
+            st.plotly_chart(fig2_mobile, use_container_width=True, config={"displayModeBar": False})
+
+
+    # =========================================================
+    # TOP 5 PRODUCTS + QUICK INSIGHT
+    # =========================================================
+    b1, b2 = st.columns([2.9, 1.0], gap="medium")
+
+    with b1:
+        with st.container(key="top_products_card", border=False):
+            st.markdown(
+                f'<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:11px;color:#17213C;font-weight:500">({selected_ts.strftime("%b %Y")} MTD · by Sales Value · Rp jt)</span></div>',
+                unsafe_allow_html=True,
+            )
+
+            top5 = (
+                mtd.groupby("Product", as_index=False)["Sales Value"]
+                .sum()
+                .sort_values("Sales Value", ascending=False)
+                .head(5)
+                .sort_values("Sales Value", ascending=True)
+            )
+            total_mtd_for_share = float(mtd["Sales Value"].sum())
+            top5["Share"] = np.where(total_mtd_for_share != 0, top5["Sales Value"] / total_mtd_for_share * 100, 0)
+            top5["ValueJt"] = top5["Sales Value"] / 1_000_000
+
+            top_colors = ["#F4B51F", "#4BC675", "#4E85EB", "#8A5AE2", "#EF347D"][:len(top5)]
+
+            fig3 = go.Figure(
+                go.Bar(
+                    y=top5["Product"],
+                    x=top5["ValueJt"],
+                    orientation="h",
+                    marker_color=top_colors,
+                    text=[f"{rp_jt(v)}  ·  {s:.1f}%" for v, s in zip(top5["Sales Value"], top5["Share"])],
+                    textposition="outside",
+                    cliponaxis=False,
+                    hovertemplate="%{y}<br>Rp %{x:,.1f} jt<extra></extra>",
+                )
+            )
+            fig3.update_layout(**plot_layout(165))
+            fig3.update_layout(
+                showlegend=False,
+                bargap=.48,
+                margin=dict(l=6, r=110, t=8, b=6),
+            )
+            fig3.update_xaxes(showgrid=True, gridcolor=GRID, griddash="dot", zeroline=False, color="#6F7890")
+            fig3.update_yaxes(showgrid=False, color="#34415C", tickfont=dict(size=10))
+            st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar": False})
+
+        # Mobile-only Top 5 list: readable product names, compact bars
+        with st.container(key="top_products_card_mobile", border=False):
+            st.markdown(
+                f'<div class="panel-title">TOP 5 PRODUCTS <span style="font-size:9px;color:#929AAD;font-weight:500">({selected_ts.strftime("%b %Y")} MTD)</span></div>',
+                unsafe_allow_html=True,
+            )
+            top5_mobile = top5.sort_values("Sales Value", ascending=False).reset_index(drop=True)
+            max_top5_value = float(top5_mobile["Sales Value"].max()) if not top5_mobile.empty else 1.0
+            mobile_colors = ["#EF347D", "#8A5AE2", "#4E85EB", "#4BC675", "#F4B51F"]
+            mobile_items = []
+            for idx, row in top5_mobile.iterrows():
+                width_pct = (float(row["Sales Value"]) / max_top5_value * 100) if max_top5_value else 0
+                product_name = html.escape(str(row["Product"]))
+                value_text = html.escape(f"{rp_jt(row['Sales Value'])} · {row['Share']:.1f}%")
+                color = mobile_colors[idx % len(mobile_colors)]
+                item_html = (
+                    f'<div class="mobile-top5-item">'
+                    f'<div class="mobile-top5-head">'
+                    f'<span class="mobile-rank" style="background:{color}">{idx+1}</span>'
+                    f'<span class="mobile-product-name">{product_name}</span>'
+                    f'<span class="mobile-product-value">{value_text}</span>'
+                    f'</div>'
+                    f'<div class="mobile-product-bar">'
+                    f'<span style="width:{width_pct:.1f}%;background:{color}"></span>'
+                    f'</div>'
+                    f'</div>'
+                )
+                mobile_items.append(item_html)
+            st.markdown('<div class="mobile-top5-list">' + ''.join(mobile_items) + '</div>', unsafe_allow_html=True)
+
+    with b2:
+        if is_total_view and not pd.isna(required_daily):
+            pace_msg = "Current pace is above required pace." if daily_avg >= required_daily else "Current pace is below required pace."
+            req_value = rp_jt(required_daily)
+            req_note = f"Based on {remaining_days} days remaining"
+        elif is_total_view and remaining_days == 0 and not pd.isna(monthly_target):
+            pace_msg = "Month has reached its final day."
+            req_value = "—"
+            req_note = "No remaining selling days"
+        else:
+            pace_msg = "Target pace is shown on total view."
+            req_value = "—"
+            req_note = "Select All Platform + All Product"
+
+        with st.container(key="quick_insight_card", border=False):
+            st.markdown(
+                f"""
+                <div class="insight-content">
+                  <div class="insight-title">💡 QUICK INSIGHT</div>
+                  <div class="insight-block">
+                    <div class="insight-label">Sales pace (Daily Avg)</div>
+                    <div class="insight-value">{rp_jt(daily_avg)}/day</div>
+                    <div class="insight-note">{pace_msg}</div>
+                  </div>
+                  <div class="insight-block">
+                    <div class="insight-label">Required daily sales to reach monthly target</div>
+                    <div class="insight-value">{req_value}/day</div>
+                    <div class="insight-note">{req_note}</div>
+                  </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
 
 st.markdown(
     '<div class="footer-note">Note: All sales values are in Rupiah (Rp). Sales Target Achievement uses the total monthly e-commerce target and is therefore shown only on the unfiltered total view.</div>',
