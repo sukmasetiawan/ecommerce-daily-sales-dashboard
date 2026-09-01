@@ -776,38 +776,38 @@ st.markdown(
 
     /* V9 mobile filter layout: max 2 rows */
     @media (max-width: 760px) {
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
             display: flex !important;
             flex-wrap: wrap !important;
             gap: 8px !important;
             align-items: flex-end !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(1) {
             flex: 1 1 34% !important;
             min-width: 0 !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(2) {
             flex: 1 1 28% !important;
             min-width: 0 !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(3) {
             flex: 1 1 34% !important;
             min-width: 0 !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(4) {
             flex: 0 0 72px !important;
             min-width: 72px !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(5) {
             flex: 0 0 132px !important;
             min-width: 132px !important;
@@ -840,25 +840,25 @@ st.markdown(
     }
 
     @media (max-width: 430px) {
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(1) {
             flex: 1 1 100% !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(2),
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(3) {
             flex: 1 1 calc(50% - 4px) !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(4) {
             flex: 0 0 58px !important;
             min-width: 58px !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(5) {
             flex: 0 0 118px !important;
             min-width: 118px !important;
@@ -952,7 +952,7 @@ st.markdown(
            Row 1: Date | Platform
            Row 2: Product | Reset | Update
         */
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
             display: grid !important;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 54px 104px !important;
             grid-template-areas:
@@ -962,26 +962,26 @@ st.markdown(
             align-items: end !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"] {
             width: auto !important;
             min-width: 0 !important;
             flex: none !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(1) { grid-area: date !important; }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(2) { grid-area: platform !important; }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(3) { grid-area: product !important; }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(4) { grid-area: reset !important; }
 
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(5) { grid-area: update !important; }
 
         div[data-testid="stDateInput"] label,
@@ -1307,7 +1307,7 @@ st.markdown(
 
     @media (max-width: 760px) {
         /* FILTERS: shorter + tighter */
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
             gap: 4px 6px !important;
             margin-top: -2px !important;
             margin-bottom: 2px !important;
@@ -1409,7 +1409,7 @@ st.markdown(
         }
 
         /* 3. Product + buttons row shorter */
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
             gap: 2px 5px !important;
             margin-top: -2px !important;
             margin-bottom: 0 !important;
@@ -1571,7 +1571,7 @@ st.markdown(
         }
 
         /* 3. Product + Refresh + Update row shorter */
-        div[data-testid="stHorizontalBlock"]:has([data-testid="stDateInput"]):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
             gap: 1px 5px !important;
             margin-top: -3px !important;
             margin-bottom: 0 !important;
@@ -2743,26 +2743,47 @@ header_slot = st.empty()
 # =========================================================
 f1, f2, f3, f4, f5 = st.columns([1.0, 1.0, 1.45, .28, .42], gap="small")
 
+# Month choices are derived from actual sales data.
+available_months = (
+    sales["Tanggal"]
+    .dropna()
+    .dt.to_period("M")
+    .drop_duplicates()
+    .sort_values(ascending=False)
+    .tolist()
+)
+month_labels = [p.to_timestamp().strftime("%b %Y") for p in available_months]
+month_by_label = dict(zip(month_labels, available_months))
+latest_period = pd.Period(data_max_date, freq="M")
+
 with f1:
+    # After an Admin database update, automatically jump to the newest month.
     if "force_latest_date" in st.session_state:
-        st.session_state["date_filter"] = st.session_state.pop("force_latest_date")
-    elif "date_filter" not in st.session_state:
-        st.session_state["date_filter"] = data_max_date
+        forced_date = st.session_state.pop("force_latest_date")
+        forced_period = pd.Period(forced_date, freq="M")
+        st.session_state["month_filter"] = forced_period.to_timestamp().strftime("%b %Y")
+    elif "month_filter" not in st.session_state or st.session_state["month_filter"] not in month_labels:
+        st.session_state["month_filter"] = latest_period.to_timestamp().strftime("%b %Y")
 
-    # Keep the stored filter inside the available database range.
-    if st.session_state["date_filter"] < data_min_date:
-        st.session_state["date_filter"] = data_min_date
-    if st.session_state["date_filter"] > data_max_date:
-        st.session_state["date_filter"] = data_max_date
+    with st.container(key="month_filter", border=False):
+        selected_month_label = st.selectbox(
+            "Month",
+            month_labels,
+            key="month_filter",
+        )
 
-    selected_date = st.date_input(
-        "Date",
-        min_value=data_min_date,
-        max_value=data_max_date,
-        key="date_filter",
-    )
+selected_period = month_by_label[selected_month_label]
+selected_month_start = selected_period.to_timestamp()
+selected_calendar_end = selected_period.end_time.normalize()
 
-selected_date = min(selected_date, data_max_date)
+# Latest available month is shown only through the latest uploaded transaction date.
+# Any older month is treated as closed and shown through its calendar month-end.
+if selected_period == latest_period:
+    selected_ts = pd.Timestamp(data_max_date)
+else:
+    selected_ts = selected_calendar_end
+
+selected_date = selected_ts.date()
 
 with f2:
     platform_options = ["All Platform"] + PLATFORM_ORDER
@@ -2864,7 +2885,7 @@ with f5:
                 st.session_state.pop("admin_database_upload", None)
                 st.rerun()
 
-# Render header using the selected dashboard date.
+# Render header using the selected month cut-off date.
 logo_uri = image_data_uri(Path(__file__).parent / LOGO_FILE)
 logo_html = (
     f'<img class="ksp-logo-img" src="{logo_uri}" alt="KSP logo">'
@@ -2891,14 +2912,21 @@ header_slot.markdown(
     unsafe_allow_html=True,
 )
 
-selected_ts = pd.Timestamp(selected_date)
 year, month, day = selected_ts.year, selected_ts.month, selected_ts.day
 month_start = selected_ts.replace(day=1)
+month_end = pd.Timestamp(year, month, calendar.monthrange(year, month)[1])
 prev_month_end = month_start - pd.Timedelta(days=1)
 prev_month_start = prev_month_end.replace(day=1)
-prev_compare_day = min(day, calendar.monthrange(prev_month_start.year, prev_month_start.month)[1])
-prev_compare_end = prev_month_start + pd.Timedelta(days=prev_compare_day - 1)
-month_end = pd.Timestamp(year, month, calendar.monthrange(year, month)[1])
+
+# Older selected months are closed: compare against the full previous month.
+# Latest available month is MTD: compare against the same elapsed-day window.
+selected_month_is_closed = selected_period < latest_period or selected_ts.normalize() >= month_end.normalize()
+
+if selected_month_is_closed:
+    prev_compare_end = prev_month_end
+else:
+    prev_compare_day = min(day, calendar.monthrange(prev_month_start.year, prev_month_start.month)[1])
+    prev_compare_end = prev_month_start + pd.Timedelta(days=prev_compare_day - 1)
 
 # Base dimension filters
 filtered = sales.copy()
@@ -3216,7 +3244,12 @@ with st.container(key="dashboard_rows_wrap", border=False):
             curr_daily = current_days.merge(curr_daily, on="Day", how="left")
             prev_full = prev_days.merge(prev_full, on="Day", how="left")
 
-            # no line after selected date for current month
+            # Show every calendar day through the selected cut-off.
+            # Closed month: 1..30/31 (or 28/29) with no-sales days as 0.
+            # Latest partial month: 1..latest data date, future days stay blank.
+            curr_daily.loc[curr_daily["Day"] <= day, "Sales Value"] = (
+                curr_daily.loc[curr_daily["Day"] <= day, "Sales Value"].fillna(0)
+            )
             curr_daily.loc[curr_daily["Day"] > day, "Sales Value"] = np.nan
             curr_daily["Sales Value"] = curr_daily["Sales Value"] / 1_000_000
             prev_full["Sales Value"] = prev_full["Sales Value"].fillna(0) / 1_000_000
@@ -3570,6 +3603,6 @@ with st.container(key="dashboard_rows_wrap", border=False):
 
 
 st.markdown(
-    '<div class="footer-note">Note: All sales values are in Rupiah (Rp). Sales Target Achievement uses the total monthly e-commerce target and is therefore shown only on the unfiltered total view.</div>',
+    '<div class="footer-note">Note: All sales values are in Rupiah (Rp). Closed months show full-month data; the latest available month shows data through the most recent uploaded transaction date. Sales Target Achievement uses the total monthly e-commerce target and is therefore shown only on the unfiltered total view.</div>',
     unsafe_allow_html=True,
 )
