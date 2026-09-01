@@ -2516,6 +2516,50 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V32 — MOBILE UNIFORM SECTION SPACING
+       Desktop remains unchanged.
+       ===================================================== */
+    @media (max-width: 760px) {
+
+        /* Remove all legacy mobile row offsets */
+        .st-key-monthly_trend_card,
+        .st-key-daily_trend_card_mobile,
+        .st-key-platform_card_mobile,
+        .st-key-top_products_card_mobile,
+        .st-key-quick_insight_card {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Major cards get one consistent vertical rhythm */
+        .sales-kpi-card,
+        .target-kpi-card,
+        .st-key-monthly_trend_card,
+        .st-key-daily_trend_card_mobile,
+        .st-key-platform_card_mobile,
+        .st-key-top_products_card_mobile,
+        .st-key-quick_insight_card {
+            margin-bottom: 12px !important;
+        }
+
+        /* Last card does not need extra bottom spacing */
+        .st-key-quick_insight_card {
+            margin-bottom: 0 !important;
+        }
+
+        /* Neutralize old Streamlit wrapper gaps */
+        .st-key-dashboard_rows_wrap > div[data-testid="stVerticalBlock"] {
+            gap: 0 !important;
+            row-gap: 0 !important;
+        }
+
+        div[data-testid="stHorizontalBlock"] {
+            row-gap: 0 !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
