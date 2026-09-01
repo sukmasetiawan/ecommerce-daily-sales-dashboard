@@ -2547,6 +2547,57 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       MOBILE STACK STABILITY FIX
+       - unique element spacing at wrapper level
+       - neutralize legacy overlap rules inside explicit mobile stack
+       ===================================================== */
+    @media (max-width: 760px) {
+        .st-key-mobile_dashboard_wrap > div[data-testid="stVerticalBlock"] {
+            gap: 0 !important;
+            row-gap: 0 !important;
+        }
+
+        .st-key-mobile_dashboard_wrap
+        > div[data-testid="stVerticalBlock"]
+        > div[data-testid="stElementContainer"] {
+            margin: 0 0 12px 0 !important;
+            padding: 0 !important;
+            transform: none !important;
+            position: relative !important;
+        }
+
+        .st-key-mobile_dashboard_wrap
+        > div[data-testid="stVerticalBlock"]
+        > div[data-testid="stElementContainer"]:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .st-key-mobile_dashboard_wrap .sales-kpi-card,
+        .st-key-mobile_dashboard_wrap .target-kpi-card,
+        .st-key-mobile_monthly_card,
+        .st-key-mobile_daily_card,
+        .st-key-mobile_platform_card,
+        .st-key-mobile_top5_card,
+        .st-key-mobile_insight_card {
+            margin: 0 !important;
+            transform: none !important;
+            position: relative !important;
+            top: auto !important;
+            bottom: auto !important;
+        }
+
+        /* Explicit mobile wrapper owns visibility. */
+        .st-key-dashboard_rows_wrap {
+            display: none !important;
+        }
+
+        .st-key-mobile_dashboard_wrap {
+            display: block !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -3733,6 +3784,7 @@ with st.container(key="mobile_dashboard_wrap", border=False):
             fig_monthly_mobile,
             use_container_width=True,
             config={"displayModeBar": False},
+            key="explicit_mobile_monthly_trend",
         )
 
     # 4. Daily Sales Trend
@@ -3747,6 +3799,7 @@ with st.container(key="mobile_dashboard_wrap", border=False):
             fig_mobile,
             use_container_width=True,
             config={"displayModeBar": False},
+            key="explicit_mobile_daily_trend",
         )
 
     # 5. Sales by Platform
@@ -3761,6 +3814,7 @@ with st.container(key="mobile_dashboard_wrap", border=False):
             fig2_mobile,
             use_container_width=True,
             config={"displayModeBar": False},
+            key="explicit_mobile_platform",
         )
 
     # 6. Top 5 Products
