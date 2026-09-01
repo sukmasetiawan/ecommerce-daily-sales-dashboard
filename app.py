@@ -2560,6 +2560,86 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       V33 — MOBILE SPACING ROOT-CAUSE FIX
+       Reference rhythm: Target Achievement -> Monthly Trend.
+       ===================================================== */
+    @media (max-width: 760px) {
+        :root {
+            --mobile-major-gap: 12px;
+        }
+
+        /*
+        ROOT CAUSE:
+        Desktop chart containers were only hiding their inner card.
+        Their Streamlit stElementContainer wrappers still existed inside each
+        stacked mobile column and continued creating blank vertical space.
+
+        Hide the WHOLE desktop element wrapper on mobile.
+        */
+        div[data-testid="stElementContainer"]:has(.st-key-daily_trend_card),
+        div[data-testid="stElementContainer"]:has(.st-key-platform_card),
+        div[data-testid="stElementContainer"]:has(.st-key-top_products_card) {
+            display: none !important;
+            height: 0 !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Remove phantom internal gaps left inside the columns */
+        div[data-testid="stColumn"]:has(.st-key-daily_trend_card_mobile)
+        > div[data-testid="stVerticalBlock"],
+        div[data-testid="stColumn"]:has(.st-key-platform_card_mobile)
+        > div[data-testid="stVerticalBlock"],
+        div[data-testid="stColumn"]:has(.st-key-top_products_card_mobile)
+        > div[data-testid="stVerticalBlock"],
+        div[data-testid="stColumn"]:has(.st-key-quick_insight_card)
+        > div[data-testid="stVerticalBlock"] {
+            gap: 0 !important;
+            row-gap: 0 !important;
+        }
+
+        /* No card-level margin hacks. Parent layout owns the spacing. */
+        .st-key-monthly_trend_card,
+        .st-key-daily_trend_card_mobile,
+        .st-key-platform_card_mobile,
+        .st-key-top_products_card_mobile,
+        .st-key-quick_insight_card {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /*
+        Dashboard vertical rhythm.
+        Monthly Trend is a direct child; the Daily/Platform and
+        Top5/Insight groups are stacked HorizontalBlocks.
+        */
+        .st-key-dashboard_rows_wrap > div[data-testid="stVerticalBlock"] {
+            gap: var(--mobile-major-gap) !important;
+            row-gap: var(--mobile-major-gap) !important;
+        }
+
+        /* When desktop columns stack on mobile, use the SAME reference gap. */
+        div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card_mobile):has(.st-key-platform_card_mobile),
+        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card_mobile):has(.st-key-quick_insight_card) {
+            gap: var(--mobile-major-gap) !important;
+            row-gap: var(--mobile-major-gap) !important;
+        }
+
+        /* Streamlit columns themselves must not add extra top/bottom margin */
+        div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card_mobile)
+        > div[data-testid="stColumn"],
+        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card_mobile)
+        > div[data-testid="stColumn"] {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
