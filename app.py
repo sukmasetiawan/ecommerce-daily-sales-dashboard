@@ -776,38 +776,38 @@ st.markdown(
 
     /* V9 mobile filter layout: max 2 rows */
     @media (max-width: 760px) {
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"]) {
             display: flex !important;
             flex-wrap: wrap !important;
             gap: 8px !important;
             align-items: flex-end !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(1) {
             flex: 1 1 34% !important;
             min-width: 0 !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(2) {
             flex: 1 1 28% !important;
             min-width: 0 !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(3) {
             flex: 1 1 34% !important;
             min-width: 0 !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(4) {
             flex: 0 0 72px !important;
             min-width: 72px !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(5) {
             flex: 0 0 132px !important;
             min-width: 132px !important;
@@ -840,25 +840,25 @@ st.markdown(
     }
 
     @media (max-width: 430px) {
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(1) {
             flex: 1 1 100% !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(2),
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(3) {
             flex: 1 1 calc(50% - 4px) !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(4) {
             flex: 0 0 58px !important;
             min-width: 58px !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(5) {
             flex: 0 0 118px !important;
             min-width: 118px !important;
@@ -952,7 +952,7 @@ st.markdown(
            Row 1: Date | Platform
            Row 2: Product | Reset | Update
         */
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"]) {
             display: grid !important;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 54px 104px !important;
             grid-template-areas:
@@ -962,26 +962,26 @@ st.markdown(
             align-items: end !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"] {
             width: auto !important;
             min-width: 0 !important;
             flex: none !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(1) { grid-area: date !important; }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(2) { grid-area: platform !important; }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(3) { grid-area: product !important; }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(4) { grid-area: reset !important; }
 
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"])
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"])
         > div[data-testid="stColumn"]:nth-child(5) { grid-area: update !important; }
 
         div[data-testid="stDateInput"] label,
@@ -1307,7 +1307,7 @@ st.markdown(
 
     @media (max-width: 760px) {
         /* FILTERS: shorter + tighter */
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"]) {
             gap: 4px 6px !important;
             margin-top: -2px !important;
             margin-bottom: 2px !important;
@@ -1409,7 +1409,7 @@ st.markdown(
         }
 
         /* 3. Product + buttons row shorter */
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"]) {
             gap: 2px 5px !important;
             margin-top: -2px !important;
             margin-bottom: 0 !important;
@@ -1571,7 +1571,7 @@ st.markdown(
         }
 
         /* 3. Product + Refresh + Update row shorter */
-        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter):has([data-testid="stSelectbox"]) {
+        div[data-testid="stHorizontalBlock"]:has(.st-key-month_filter_shell):has([data-testid="stSelectbox"]) {
             gap: 1px 5px !important;
             margin-top: -3px !important;
             margin-bottom: 0 !important;
@@ -2765,7 +2765,7 @@ with f1:
     elif "month_filter" not in st.session_state or st.session_state["month_filter"] not in month_labels:
         st.session_state["month_filter"] = latest_period.to_timestamp().strftime("%b %Y")
 
-    with st.container(key="month_filter", border=False):
+    with st.container(key="month_filter_shell", border=False):
         selected_month_label = st.selectbox(
             "Month",
             month_labels,
