@@ -2452,6 +2452,40 @@ st.markdown(
         }
     }
 
+
+    /* =====================================================
+       MOBILE KPI SPACING — SURGICAL FIX
+       Only affects:
+       Sales MTD -> Target Achievement -> Monthly Trend
+       ===================================================== */
+    @media (max-width: 760px) {
+
+        /* When the 2 desktop KPI columns stack vertically on mobile,
+           give each actual Streamlit column wrapper bottom breathing room. */
+        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card)
+        > div[data-testid="stColumn"] {
+            padding-bottom: 12px !important;
+            margin: 0 !important;
+        }
+
+        /* Do not add extra space after the second KPI column itself;
+           the outer dashboard rhythm already handles the next section. */
+        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card)
+        > div[data-testid="stColumn"]:last-child {
+            padding-bottom: 12px !important;
+        }
+
+        /* Neutralize card-level offsets just within the KPI pair */
+        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card)
+        .sales-kpi-card,
+        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card)
+        .target-kpi-card {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            transform: none !important;
+        }
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
