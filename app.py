@@ -2061,13 +2061,21 @@ st.markdown(
     }
 
 
-    /* V23 — COMPACT NEON DASHBOARD */
+
+    /* =====================================================
+       FINAL CONSOLIDATED LAYOUT THEME
+       Refactored from V23–V34 accumulated overrides.
+       ===================================================== */
+
+    /* ---------- Shared compact layout ---------- */
     .block-container {
         padding-top: 0.15rem !important;
         padding-bottom: 1.0rem !important;
     }
-    .dashboard-header { margin-bottom: 6px !important; }
-    .section-gap { height: 8px !important; }
+
+    .dashboard-header {
+        margin-bottom: 6px !important;
+    }
 
     div[data-testid="stSelectbox"] > div > div,
     div[data-testid="stDateInput"] > div > div {
@@ -2075,11 +2083,13 @@ st.markdown(
         height: 36px !important;
         border-radius: 11px !important;
     }
+
     div[data-testid="stSelectbox"] label,
     div[data-testid="stDateInput"] label {
         margin-bottom: 1px !important;
         font-size: 10px !important;
     }
+
     div.stButton > button,
     div[data-testid="stPopover"] > button,
     button[data-testid="baseButton-secondary"] {
@@ -2087,53 +2097,113 @@ st.markdown(
         min-height: 36px !important;
         border-radius: 10px !important;
     }
-    .filter-button-spacer { height: 16px !important; }
+
+    .filter-button-spacer {
+        height: 16px !important;
+    }
+
     .asof-badge {
         padding: 7px 11px 8px 11px !important;
         min-width: 122px !important;
     }
 
+    /* ---------- KPI cards ---------- */
     .kpi-card {
-        min-height: 158px !important;
-        height: 158px !important;
+        min-height: 176px !important;
+        height: 176px !important;
         padding: 14px 18px !important;
     }
+
     .kpi-grid {
         grid-template-columns: 90px minmax(0, 1fr) !important;
         gap: 16px !important;
     }
+
     .kpi-icon {
         width: 74px !important;
         height: 74px !important;
         border-radius: 18px !important;
         font-size: 30px !important;
     }
-    .kpi-title { margin: 0 0 5px 0 !important; }
-    .kpi-value { margin: 1px 0 5px 0 !important; }
-    .growth-panel { padding-bottom: 3px !important; }
-    .growth-label { margin-bottom: 3px !important; }
-    .divider { margin: 7px 0 7px 0 !important; }
-    .daily-avg-row { align-items: center !important; }
+
+    .kpi-title {
+        margin: 0 0 5px 0 !important;
+    }
+
+    .kpi-value {
+        margin: 1px 0 5px 0 !important;
+    }
+
+    .growth-panel {
+        padding-bottom: 3px !important;
+    }
+
+    .growth-label {
+        margin-bottom: 3px !important;
+    }
+
+    .divider {
+        margin: 7px 0 !important;
+    }
+
+    .daily-avg-row {
+        align-items: center !important;
+    }
+
     .progress-track {
         margin: 6px 0 7px 0 !important;
         height: 6px !important;
     }
-    .target-stats { margin-top: 2px !important; }
 
+    .target-stats {
+        margin-top: 3px !important;
+    }
+
+    .target-stat-label {
+        margin-bottom: 2px !important;
+        line-height: 1.15 !important;
+    }
+
+    .target-stat-value {
+        line-height: 1.2 !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+
+    /* ---------- Desktop chart cards ---------- */
     .st-key-daily_trend_card,
     .st-key-platform_card,
     .st-key-top_products_card {
         padding: 12px 16px 5px 16px !important;
         border-radius: 17px !important;
     }
+
+    .st-key-daily_trend_card,
+    .st-key-platform_card {
+        min-height: 0 !important;
+        height: auto !important;
+    }
+
     .st-key-quick_insight_card {
         padding: 13px 16px !important;
         border-radius: 17px !important;
     }
-    .panel-title { margin-bottom: 0 !important; }
-    .insight-title { margin-bottom: 10px !important; }
-    .insight-block { padding-bottom: 9px !important; }
-    .insight-block + .insight-block { padding-top: 9px !important; }
+
+    .panel-title {
+        margin-bottom: 0 !important;
+    }
+
+    .insight-title {
+        margin-bottom: 10px !important;
+    }
+
+    .insight-block {
+        padding-bottom: 9px !important;
+    }
+
+    .insight-block + .insight-block {
+        padding-top: 9px !important;
+    }
 
     .st-key-daily_trend_card::before,
     .st-key-platform_card::before,
@@ -2154,139 +2224,7 @@ st.markdown(
         margin-bottom: -7px !important;
     }
 
-    @media (max-width: 760px) {
-        .block-container {
-            padding: 0.35rem 0.65rem 0.8rem 0.65rem !important;
-        }
-        .dashboard-header { margin-bottom: 4px !important; }
-        .asof-badge {
-            padding: 4px 8px !important;
-            margin-bottom: 7px !important;
-        }
-
-        div[data-testid="stDateInput"] > div > div,
-        div[data-testid="stSelectbox"] > div > div {
-            height: 28px !important;
-            min-height: 28px !important;
-        }
-        div.stButton > button,
-        div[data-testid="stPopover"] button,
-        button[data-testid="baseButton-secondary"] {
-            height: 28px !important;
-            min-height: 28px !important;
-        }
-        .filter-button-spacer { height: 8px !important; }
-
-        .kpi-card {
-            min-height: 0 !important;
-            height: auto !important;
-            padding: 11px 12px !important;
-        }
-        .kpi-grid {
-            grid-template-columns: 54px minmax(0, 1fr) !important;
-            gap: 9px !important;
-        }
-        .kpi-icon {
-            width: 50px !important;
-            height: 50px !important;
-            border-radius: 14px !important;
-            font-size: 22px !important;
-        }
-        .divider { margin: 6px 0 !important; }
-
-        .st-key-daily_trend_card_mobile,
-        .st-key-platform_card_mobile,
-        .st-key-top_products_card_mobile {
-            padding: 10px 10px 5px 10px !important;
-            border-radius: 14px !important;
-        }
-        .st-key-quick_insight_card {
-            padding: 11px 12px !important;
-            border-radius: 14px !important;
-        }
-        .insight-title { margin-bottom: 8px !important; }
-        .insight-block { padding-bottom: 7px !important; }
-        .insight-block + .insight-block { padding-top: 7px !important; }
-    }
-
-
-    /* =====================================================
-       V24 — COMPACT LAYOUT CORRECTIONS
-       ===================================================== */
-    @media (min-width: 761px) {
-        /* Fix clipped Target Achievement values while keeping both KPI cards aligned */
-        .kpi-card {
-            min-height: 176px !important;
-            height: 176px !important;
-        }
-
-        /* Ensure the bottom stat values remain fully visible */
-        .target-stats {
-            margin-top: 3px !important;
-        }
-
-        .target-stat-label {
-            margin-bottom: 2px !important;
-            line-height: 1.15 !important;
-        }
-
-        .target-stat-value {
-            line-height: 1.2 !important;
-            overflow: visible !important;
-            text-overflow: clip !important;
-        }
-
-        /* Reduce the gap between chart row and Top 5 / Quick Insight row */
-        .section-gap {
-            height: 3px !important;
-        }
-
-        /* Keep Daily Trend and Platform cards visually equal in height */
-        .st-key-daily_trend_card,
-        .st-key-platform_card {
-            min-height: 0 !important;
-            height: auto !important;
-        }
-    }
-
-
-    /* =====================================================
-       V25 — REDUCE GAP BETWEEN CHART ROW AND BOTTOM ROW
-       Desktop only. Card heights remain unchanged.
-       ===================================================== */
-    @media (min-width: 761px) {
-        /* The row spacer after Daily Trend / Sales by Platform was still too tall.
-           Pull the bottom row upward without altering card dimensions. */
-        .section-gap {
-            height: 0 !important;
-            margin: 0 !important;
-        }
-
-        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
-            margin-top: -8px !important;
-        }
-    }
-
-
-    /* V26 — direct bottom-row gap fix */
-    @media (min-width: 761px) {
-        .st-key-top_products_card,
-        .st-key-quick_insight_card {
-            margin-top: -26px !important;
-        }
-
-        .section-gap {
-            height: 0 !important;
-            min-height: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-    }
-
-
-    /* =====================================================
-       V27 — MONTHLY SALES TREND
-       ===================================================== */
+    /* ---------- Monthly Sales Trend ---------- */
     .st-key-monthly_trend_card {
         background: var(--card-fill) !important;
         border: 1px solid rgba(62, 190, 105, .88) !important;
@@ -2331,253 +2269,127 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(31,45,72,.08);
     }
 
-    @media (max-width: 760px) {
-        .st-key-monthly_trend_card {
-            padding: 10px 10px 4px 10px !important;
-            border-radius: 14px !important;
-            box-shadow: 0 0 10px rgba(62,190,105,.12), 0 6px 20px rgba(30,45,75,.045) !important;
-        }
-        .st-key-monthly_trend_card::before {
-            display: none !important;
-        }
-    }
-
-
-    /* =====================================================
-       V28 — TITLE READABILITY + UNIFORM VERTICAL SPACING
-       ===================================================== */
+    /* ---------- Desktop row spacing ----------
+       Preserves the latest calibrated desktop appearance. */
     @media (min-width: 761px) {
-        /* One consistent vertical gap between every main dashboard row */
-        .section-gap {
-            height: 10px !important;
-            min-height: 10px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        /* Cancel legacy V25/V26 negative-margin gap fixes */
-        .st-key-top_products_card,
-        .st-key-quick_insight_card {
-            margin-top: 0 !important;
-        }
-
-        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
-            margin-top: 0 !important;
-        }
-    }
-
-    @media (max-width: 760px) {
-        .section-gap {
-            height: 8px !important;
-            min-height: 8px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-    }
-
-
-    /* =====================================================
-       V29 — UNIFORM MAJOR ROW SPACING
-       Use direct row/card margins; disable spacer divs.
-       ===================================================== */
-
-    /* Remove legacy spacer elements completely */
-    .section-gap {
-        display: none !important;
-        height: 0 !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    @media (min-width: 761px) {
-        /* KPI row -> Monthly Sales Trend */
-        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card) {
-            margin-bottom: 12px !important;
-        }
-
-        /* Monthly Sales Trend -> Daily / Platform row */
-        .st-key-monthly_trend_card {
-            margin-bottom: 12px !important;
-        }
-
-        /* Daily / Platform row -> Top 5 / Quick Insight row */
-        div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card):has(.st-key-platform_card) {
-            margin-bottom: 12px !important;
-        }
-
-        /* Kill all old row-shift hacks */
-        .st-key-top_products_card,
-        .st-key-quick_insight_card {
-            margin-top: 0 !important;
-        }
-
-        div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
-            margin-top: 0 !important;
-        }
-    }
-
-    @media (max-width: 760px) {
-        /* Mobile uses the same visual rhythm */
-        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card) {
-            margin-bottom: 8px !important;
-        }
-
-        .st-key-monthly_trend_card {
-            margin-bottom: 8px !important;
-        }
-
-        .st-key-daily_trend_card_mobile,
-        .st-key-platform_card_mobile {
-            margin-bottom: 8px !important;
-        }
-
-        .st-key-top_products_card_mobile,
-        .st-key-quick_insight_card {
-            margin-top: 0 !important;
-        }
-    }
-
-
-    /* =====================================================
-       V30 — TRUE UNIFORM ROW SPACING
-       The dashboard rows now live inside one keyed container.
-       We control the actual Streamlit VerticalBlock gap directly.
-       ===================================================== */
-
-    /* Disable old artificial spacer styling */
-    .section-gap {
-        display: none !important;
-        height: 0 !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    /* Neutralize every previous manual row offset */
-    .st-key-monthly_trend_card,
-    .st-key-top_products_card,
-    .st-key-quick_insight_card {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-    }
-
-    div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card),
-    div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card):has(.st-key-platform_card),
-    div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-    }
-
-    /* THIS is now the single source of truth for vertical spacing */
-    .st-key-dashboard_rows_wrap > div[data-testid="stVerticalBlock"] {
-        gap: 12px !important;
-        row-gap: 12px !important;
-    }
-
-    @media (max-width: 760px) {
         .st-key-dashboard_rows_wrap > div[data-testid="stVerticalBlock"] {
-            gap: 8px !important;
-            row-gap: 8px !important;
+            gap: 12px !important;
+            row-gap: 12px !important;
         }
-    }
 
-
-    /* =====================================================
-       V31 — SCREENSHOT-CALIBRATED ROW SPACING
-       Final visual correction based on latest rendered output.
-       ===================================================== */
-    @media (min-width: 761px) {
-
-        /* 1) KPI -> Monthly was too tight: add visible breathing room */
         .st-key-monthly_trend_card {
             margin-top: 10px !important;
             margin-bottom: 0 !important;
         }
 
-        /* 2) Monthly -> Daily/Platform is already close to desired rhythm */
-        div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card):has(.st-key-platform_card) {
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-        }
-
-        /* 3) Daily/Platform -> Bottom row was clearly too wide:
-              pull BOTH bottom cards upward equally */
         .st-key-top_products_card,
         .st-key-quick_insight_card {
             margin-top: -13px !important;
             margin-bottom: 0 !important;
         }
 
-        /* Keep legacy row wrapper margins neutral */
+        div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card):has(.st-key-platform_card),
         div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card):has(.st-key-quick_insight_card) {
             margin-top: 0 !important;
             margin-bottom: 0 !important;
         }
     }
 
-
-    /* =====================================================
-       V32 — MOBILE UNIFORM SECTION SPACING
-       Desktop remains unchanged.
-       ===================================================== */
-    @media (max-width: 760px) {
-
-        /* Remove all legacy mobile row offsets */
-        .st-key-monthly_trend_card,
-        .st-key-daily_trend_card_mobile,
-        .st-key-platform_card_mobile,
-        .st-key-top_products_card_mobile,
-        .st-key-quick_insight_card {
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-        }
-
-        /* Major cards get one consistent vertical rhythm */
-        .sales-kpi-card,
-        .target-kpi-card,
-        .st-key-monthly_trend_card,
-        .st-key-daily_trend_card_mobile,
-        .st-key-platform_card_mobile,
-        .st-key-top_products_card_mobile,
-        .st-key-quick_insight_card {
-            margin-bottom: 12px !important;
-        }
-
-        /* Last card does not need extra bottom spacing */
-        .st-key-quick_insight_card {
-            margin-bottom: 0 !important;
-        }
-
-        /* Neutralize old Streamlit wrapper gaps */
-        .st-key-dashboard_rows_wrap > div[data-testid="stVerticalBlock"] {
-            gap: 0 !important;
-            row-gap: 0 !important;
-        }
-
-        div[data-testid="stHorizontalBlock"] {
-            row-gap: 0 !important;
-        }
-    }
-
-
-    /* =====================================================
-       V33 — MOBILE SPACING ROOT-CAUSE FIX
-       Reference rhythm: Target Achievement -> Monthly Trend.
-       ===================================================== */
+    /* ---------- Mobile final layout ---------- */
     @media (max-width: 760px) {
         :root {
             --mobile-major-gap: 12px;
         }
 
-        /*
-        ROOT CAUSE:
-        Desktop chart containers were only hiding their inner card.
-        Their Streamlit stElementContainer wrappers still existed inside each
-        stacked mobile column and continued creating blank vertical space.
+        .block-container {
+            padding: 0.35rem 0.65rem 0.8rem 0.65rem !important;
+        }
 
-        Hide the WHOLE desktop element wrapper on mobile.
-        */
+        .dashboard-header {
+            margin-bottom: 4px !important;
+        }
+
+        .asof-badge {
+            padding: 4px 8px !important;
+            margin-bottom: 7px !important;
+        }
+
+        div[data-testid="stDateInput"] > div > div,
+        div[data-testid="stSelectbox"] > div > div {
+            height: 28px !important;
+            min-height: 28px !important;
+        }
+
+        div.stButton > button,
+        div[data-testid="stPopover"] button,
+        button[data-testid="baseButton-secondary"] {
+            height: 28px !important;
+            min-height: 28px !important;
+        }
+
+        .filter-button-spacer {
+            height: 8px !important;
+        }
+
+        .kpi-card {
+            min-height: 0 !important;
+            height: auto !important;
+            padding: 11px 12px !important;
+        }
+
+        .kpi-grid {
+            grid-template-columns: 54px minmax(0, 1fr) !important;
+            gap: 9px !important;
+        }
+
+        .kpi-icon {
+            width: 50px !important;
+            height: 50px !important;
+            border-radius: 14px !important;
+            font-size: 22px !important;
+        }
+
+        .divider {
+            margin: 6px 0 !important;
+        }
+
+        .st-key-daily_trend_card_mobile,
+        .st-key-platform_card_mobile,
+        .st-key-top_products_card_mobile {
+            padding: 10px 10px 5px 10px !important;
+            border-radius: 14px !important;
+        }
+
+        .st-key-quick_insight_card {
+            padding: 11px 12px !important;
+            border-radius: 14px !important;
+        }
+
+        .insight-title {
+            margin-bottom: 8px !important;
+        }
+
+        .insight-block {
+            padding-bottom: 7px !important;
+        }
+
+        .insight-block + .insight-block {
+            padding-top: 7px !important;
+        }
+
+        .st-key-monthly_trend_card {
+            padding: 10px 10px 4px 10px !important;
+            border-radius: 14px !important;
+            box-shadow:
+                0 0 10px rgba(62,190,105,.12),
+                0 6px 20px rgba(30,45,75,.045) !important;
+        }
+
+        .st-key-monthly_trend_card::before {
+            display: none !important;
+        }
+
+        /* Hide the entire desktop chart wrappers on mobile */
         div[data-testid="stElementContainer"]:has(.st-key-daily_trend_card),
         div[data-testid="stElementContainer"]:has(.st-key-platform_card),
         div[data-testid="stElementContainer"]:has(.st-key-top_products_card) {
@@ -2588,7 +2400,7 @@ st.markdown(
             padding: 0 !important;
         }
 
-        /* Remove phantom internal gaps left inside the columns */
+        /* Remove phantom gaps inside stacked columns */
         div[data-testid="stColumn"]:has(.st-key-daily_trend_card_mobile)
         > div[data-testid="stVerticalBlock"],
         div[data-testid="stColumn"]:has(.st-key-platform_card_mobile)
@@ -2601,34 +2413,23 @@ st.markdown(
             row-gap: 0 !important;
         }
 
-        /* No card-level margin hacks. Parent layout owns the spacing. */
-        .st-key-monthly_trend_card,
-        .st-key-daily_trend_card_mobile,
-        .st-key-platform_card_mobile,
-        .st-key-top_products_card_mobile,
-        .st-key-quick_insight_card {
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-        }
-
-        /*
-        Dashboard vertical rhythm.
-        Monthly Trend is a direct child; the Daily/Platform and
-        Top5/Insight groups are stacked HorizontalBlocks.
-        */
+        /* One spacing token for the whole mobile dashboard */
         .st-key-dashboard_rows_wrap > div[data-testid="stVerticalBlock"] {
             gap: var(--mobile-major-gap) !important;
             row-gap: var(--mobile-major-gap) !important;
         }
 
-        /* When desktop columns stack on mobile, use the SAME reference gap. */
+        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card),
         div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card_mobile):has(.st-key-platform_card_mobile),
         div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card_mobile):has(.st-key-quick_insight_card) {
             gap: var(--mobile-major-gap) !important;
             row-gap: var(--mobile-major-gap) !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
 
-        /* Streamlit columns themselves must not add extra top/bottom margin */
+        div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card)
+        > div[data-testid="stColumn"],
         div[data-testid="stHorizontalBlock"]:has(.st-key-daily_trend_card_mobile)
         > div[data-testid="stColumn"],
         div[data-testid="stHorizontalBlock"]:has(.st-key-top_products_card_mobile)
@@ -2637,6 +2438,17 @@ st.markdown(
             margin-bottom: 0 !important;
             padding-top: 0 !important;
             padding-bottom: 0 !important;
+        }
+
+        .sales-kpi-card,
+        .target-kpi-card,
+        .st-key-monthly_trend_card,
+        .st-key-daily_trend_card_mobile,
+        .st-key-platform_card_mobile,
+        .st-key-top_products_card_mobile,
+        .st-key-quick_insight_card {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
     }
 
