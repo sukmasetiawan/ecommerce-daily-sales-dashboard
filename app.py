@@ -2462,17 +2462,18 @@ st.markdown(
 
         /* When the 2 desktop KPI columns stack vertically on mobile,
            give each actual Streamlit column wrapper bottom breathing room. */
+        /* Sales MTD -> Target Achievement = 18px */
         div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card)
-        > div[data-testid="stColumn"] {
-            padding-bottom: 12px !important;
+        > div[data-testid="stColumn"]:first-child {
+            padding-bottom: 18px !important;
             margin: 0 !important;
         }
 
-        /* Do not add extra space after the second KPI column itself;
-           the outer dashboard rhythm already handles the next section. */
+        /* Target Achievement -> Monthly Sales Trend = 14px */
         div[data-testid="stHorizontalBlock"]:has(.sales-kpi-card):has(.target-kpi-card)
         > div[data-testid="stColumn"]:last-child {
-            padding-bottom: 12px !important;
+            padding-bottom: 14px !important;
+            margin: 0 !important;
         }
 
         /* Neutralize card-level offsets just within the KPI pair */
